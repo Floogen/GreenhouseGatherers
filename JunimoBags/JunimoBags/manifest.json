@@ -1,0 +1,16 @@
+﻿{
+  "Name": "JunimoBags",
+  "Author": "PeacefulEnd",
+  "Version": "REPLACE_ME_WITH_VERSION",
+  "Description": "Placeable, craftable items that let Junimos harvest crops inside buildings.",
+  "UniqueID": "PeacefulEnd.JunimoBags",
+  "EntryDll": "JunimoBags.dll",
+  "MinimumApiVersion": "3.0.0",
+  "UpdateKeys": [ "Nexus:????" ],
+  "Dependencies": [
+   {
+      "UniqueID": "spacechase0.JsonAssets",
+      "IsRequired": true
+   }
+]
+}
