@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JunimoBags.JunimoBags
+namespace GreenhouseGatherers.GreenhouseGatherers
 {
     public class ModEntry : Mod
     {

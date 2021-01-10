@@ -9,8 +9,8 @@
     <ProjectGuid>{67067402-DAA7-4257-AF09-1A8C4C09CA9F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JunimoBags</RootNamespace>
-    <AssemblyName>JunimoBags</AssemblyName>
+    <RootNamespace>GreenhouseGatherers</RootNamespace>
+    <AssemblyName>GreenhouseGatherers</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -50,11 +50,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JunimoBags\ModEntry.cs" />
+    <Compile Include="GreenhouseGatherers\ModEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="[JA] JunimoBags\BigCraftables\Junimo Bag\object.png">
+    <Content Include="[JA] GreenhouseGatherers\BigCraftables\Junimo Bag\big-craftable.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -63,10 +63,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="[JA] JunimoBags\BigCraftables\Junimo Bag\object.json">
+    <None Include="[JA] GreenhouseGatherers\BigCraftables\Junimo Bag\big-craftable.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="[JA] JunimoBags\manifest.json">
+    <None Include="[JA] GreenhouseGatherers\manifest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
