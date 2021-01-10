@@ -31,6 +31,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.API
             monitor.Log("Successfully hooked into spacechase0.JsonAssets.", LogLevel.Debug);
         }
 
+        public static IJsonAssetApi GetJsonAssetInterface()
+        {
+            return jsonAssetApi;
+        }
+
+
         public static int GetHarvestStatueID()
         {
             if (jsonAssetApi is null)
@@ -38,7 +44,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.API
                 return -1;
             }
 
-            return jsonAssetApi.GetObjectId("Harvest Statue");
+            return jsonAssetApi.GetBigCraftableId("Harvest Statue");
         }
     }
 }
