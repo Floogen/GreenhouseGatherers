@@ -11,6 +11,8 @@ namespace GreenhouseGatherers.GreenhouseGatherers
     {
         public override void Entry(IModHelper helper)
         {
+            // Load the monitor
+            Resources.LoadMonitor(this.Monitor);
 
             // Hook into the game launch
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
