@@ -92,6 +92,8 @@
     PostBuildMacros;
   </PostBuildEventDependsOn>
     <PostBuildEvent>mkdir "$(TargetDir)$(ProjectName)"
+
+powershell -Command "(ls *manifest.json -rec | foreach-object { $f=$_.FullName; (gc -LiteralPath \"$f\") -replace 'REPLACE_ME_WITH_VERSION',  '@(VersionNumber)' | sc -LiteralPath \"$f\" })"
 move "$(TargetDir)manifest.json" "$(TargetDir)$(ProjectName)"
 move "$(TargetDir)$(ProjectName).dll" "$(TargetDir)$(ProjectName)"
 move "$(TargetDir)$(ProjectName).pdb" "$(TargetDir)$(ProjectName)"
