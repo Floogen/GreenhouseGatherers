@@ -1,0 +1,21 @@
+﻿{
+	"Name": "Junimo Bag",
+	"Description": "A magic infused sack that attracts Junimos. If placed indoors the Junimos will harvest nearby crops for you.",
+	"Price": 0,
+	"Recipe":
+    {
+        "ResultCount": 1,
+        "Ingredients": [
+            {
+                "Object": 268,
+                "Count": 50,
+            },
+            {
+                "Object": 771,
+                "Count": 200,
+            }
+        ],
+        "CanPurchase": false,
+        "IsDefault": true
+    }
+}

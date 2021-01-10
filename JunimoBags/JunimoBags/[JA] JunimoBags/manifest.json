@@ -1,0 +1,11 @@
+{
+	"Name": "[JA] JunimoBags",
+	"Author": "PeacefulEnd",
+	"Description": "Adds craftable Junimo Bags.",
+	"Version": "REPLACE_ME_WITH_VERSION",
+	"UniqueID": "PeacefulEnd.JunimoBags.JA",
+	"UpdateKeys": [],
+	"ContentPackFor": {
+    	"UniqueID": "spacechase0.JsonAssets"
+	},
+}
