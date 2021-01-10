@@ -2,7 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-	<EnableHarmony>true</EnableHarmony>
+    <EnableHarmony>true</EnableHarmony>
     <EnableModZip>false</EnableModZip>
     <EnableModDeploy>false</EnableModDeploy>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -51,7 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GreenhouseGatherers\API\ApiManager.cs" />
+    <Compile Include="GreenhouseGatherers\API\Interfaces\IJsonAssetApi.cs" />
     <Compile Include="GreenhouseGatherers\ModEntry.cs" />
+    <Compile Include="GreenhouseGatherers\Objects\HarvestStatue.cs" />
+    <Compile Include="GreenhouseGatherers\Patches\ObjectPatch.cs" />
+    <Compile Include="GreenhouseGatherers\Resources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
