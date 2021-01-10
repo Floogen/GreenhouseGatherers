@@ -1,0 +1,20 @@
+﻿{
+	"Name": "Harvest Statue",
+	"Description": "A magic infused statue that attracts Junimos. If placed indoors the Junimos will harvest nearby crops for you.",
+	"Price": 0,
+	"Recipe":
+    {
+        "ResultCount": 1,
+        "Ingredients": [
+            {
+                "Object": 2,
+                "Count": 400,
+            },
+            {
+                "Object": 268,
+                "Count": 200,
+            }
+        ],
+        "IsDefault": true
+    }
+}

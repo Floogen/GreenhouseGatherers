@@ -54,7 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="[JA] GreenhouseGatherers\BigCraftables\Junimo Bag\big-craftable.png">
+    <Content Include="[JA] GreenhouseGatherers\BigCraftables\Harvest Statue\big-craftable.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -63,7 +63,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="[JA] GreenhouseGatherers\BigCraftables\Junimo Bag\big-craftable.json">
+    <None Include="[JA] GreenhouseGatherers\BigCraftables\Harvest Statue\big-craftable.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="[JA] GreenhouseGatherers\manifest.json">
