@@ -54,6 +54,15 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			}
         }
 
+		public void SetItems(NetObjectList<Item> items)
+        {
+			foreach (var item in items)
+			{
+				this.addItem(item);
+			}
+
+			UpdateSprite();
+		}
 
 		private void UpdateSprite()
         {
