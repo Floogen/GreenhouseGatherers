@@ -23,7 +23,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
             return AccessTools.Method(typeof(StardewValley.Crop), nameof(StardewValley.Crop.harvest));
         }
 
-        internal static bool Prefix(Crop __instance, int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester = null)
+        internal static bool Prefix(Crop __instance, Vector2 ___tilePosition, int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester = null)
         {
             if (soil.currentLocation.numberOfObjectsWithName("Harvest Statue") == 0)
             {
@@ -33,11 +33,16 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
             // Get the nearby HarvestStatue, which will be placing the harvested crop into
             HarvestStatue statueObj = soil.currentLocation.objects.Pairs.First(p => p.Value.Name == "Harvest Statue").Value as HarvestStatue;
 
+			if ((bool)__instance.dead)
+			{
+				return false;
+			}
+
 			bool success = false;
 			if ((bool)__instance.forageCrop)
 			{
 				Object o = null;
-                System.Random r2 = new System.Random((int)Game1.stats.DaysPlayed + (int)Game1.uniqueIDForThisGame / 2 + xTile * 1000 + yTile * 2000);
+				System.Random r2 = new System.Random((int)Game1.stats.DaysPlayed + (int)Game1.uniqueIDForThisGame / 2 + xTile * 1000 + yTile * 2000);
 				switch ((int)__instance.whichForageCrop)
 				{
 					case 1:
@@ -63,18 +68,20 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 
 				// Add the forage crop to the HarvestStatue's inventory
 				if (statueObj.addItem(o) != null)
-                {
-					Game1.showRedMessage($"The Harvest Statue at {soil.currentLocation.Name} is full, so the Junimos ate the extra crops!");
+				{
+					//Game1.showRedMessage($"The Harvest Statue at {soil.currentLocation.Name} is full, so the Junimos ate the extra crops!");
 				}
+
+				return false;
 			}
-			else if (__instance.fullyGrown)
+			else if ((int)__instance.currentPhase >= __instance.phaseDays.Count - 1 && (!__instance.fullyGrown || (int)__instance.dayOfCurrentPhase <= 0))
 			{
 				int numToHarvest = 1;
 				int cropQuality = 0;
 				int fertilizerQualityLevel = 0;
 				if ((int)__instance.indexOfHarvest == 0)
 				{
-					return true;
+					return false;
 				}
 				System.Random r = new System.Random(xTile * 7 + yTile * 11 + (int)Game1.stats.DaysPlayed + (int)Game1.uniqueIDForThisGame);
 				switch ((int)soil.fertilizer)
@@ -127,14 +134,25 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 				{
 					Quality = cropQuality
 				} : new Object(__instance.indexOfHarvest, 1, isRecipe: false, -1, cropQuality));
-
-				// Add the crop to the HarvestStatue's inventory
-				if (statueObj.addItem(harvestedItem) != null)
+				if ((int)__instance.harvestMethod == 1)
 				{
-					Game1.showRedMessage($"The Harvest Statue at {soil.currentLocation.Name} is full, so the Junimos ate the extra crops!");
+					statueObj.addItem(harvestedItem.getOne());
+					success = true;
 				}
-				success = true;
-				
+				else if (statueObj.addItem(harvestedItem.getOne()) is null)
+				{
+					Vector2 initialTile = new Vector2(xTile, yTile);
+
+					if (r.NextDouble() < Game1.player.team.AverageLuckLevel() / 1500.0 + Game1.player.team.AverageDailyLuck() / 1200.0 + 9.9999997473787516E-05)
+					{
+						numToHarvest *= 2;
+					}
+					success = true;
+				}
+				else
+				{
+					Game1.showRedMessage(Game1.content.LoadString("Strings\\StringsFromCSFiles:Crop.cs.588"));
+				}
 				if (success)
 				{
 					if ((int)__instance.indexOfHarvest == 421)
@@ -144,33 +162,33 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 					}
 					int price = System.Convert.ToInt32(Game1.objectInformation[__instance.indexOfHarvest].Split('/')[1]);
 					harvestedItem = (__instance.programColored ? new ColoredObject(__instance.indexOfHarvest, 1, __instance.tintColor) : new Object(__instance.indexOfHarvest, 1));
+					float experience = (float)(16.0 * System.Math.Log(0.018 * (double)price + 1.0, System.Math.E));
+
 					for (int i = 0; i < numToHarvest - 1; i++)
 					{
-						Game1.createItemDebris(harvestedItem.getOne(), new Vector2(xTile * 64 + 32, yTile * 64 + 32), -1);
+						statueObj.addItem(harvestedItem.getOne());
 					}
 					if ((int)__instance.indexOfHarvest == 262 && r.NextDouble() < 0.4)
 					{
 						Object hay_item = new Object(178, 1);
-						Game1.createItemDebris(hay_item.getOne(), new Vector2(xTile * 64 + 32, yTile * 64 + 32), -1);
+						statueObj.addItem(hay_item.getOne());
 					}
 					else if ((int)__instance.indexOfHarvest == 771)
 					{
-						Game1.player.currentLocation.playSound("cut");
 						if (r.NextDouble() < 0.1)
 						{
 							Object mixedSeeds_item = new Object(770, 1);
-							Game1.createItemDebris(mixedSeeds_item.getOne(), new Vector2(xTile * 64 + 32, yTile * 64 + 32), -1);
+							statueObj.addItem(mixedSeeds_item.getOne());
 						}
 					}
 					if ((int)__instance.regrowAfterHarvest == -1)
 					{
 						return false;
 					}
-
 					__instance.fullyGrown.Value = true;
 					if (__instance.dayOfCurrentPhase.Value == (int)__instance.regrowAfterHarvest)
 					{
-						__instance.updateDrawMath(soil.currentTileLocation);
+						__instance.updateDrawMath(___tilePosition);
 					}
 					__instance.dayOfCurrentPhase.Value = __instance.regrowAfterHarvest;
 				}
