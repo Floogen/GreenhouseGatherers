@@ -10,11 +10,16 @@ using System.Linq;
 using GreenhouseGatherers.GreenhouseGatherers.Objects;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using GreenhouseGatherers.GreenhouseGatherers.Models;
 
 namespace GreenhouseGatherers.GreenhouseGatherers
 {
     public class ModEntry : Mod
     {
+        private SaveData saveData;
+        private int harvestStatueID;
+        private string saveDataCachePath;
+
         public override void Entry(IModHelper helper)
         {
             // Load the monitor
@@ -33,8 +38,13 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             // Hook into the game launch
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
 
+            // Hook into ObjectListChanged event so we can catch when Harvest Statues are placed / removed
+            helper.Events.World.ObjectListChanged += this.OnObjectListChanged;
+
             // Hook into save related events
             helper.Events.GameLoop.Saving += this.OnSaving;
+            helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+            helper.Events.GameLoop.DayStarted += this.OnDayStarted;
         }
 
         public void harmonyPatch()
@@ -52,32 +62,74 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 ApiManager.HookIntoJsonAssets(Helper);
             }
 
+            // Hook into Json Asset's IdsAssigned event
             ApiManager.GetJsonAssetInterface().IdsAssigned += OnIdsAssigned;
+        }
+
+        private void OnObjectListChanged(object sender, ObjectListChangedEventArgs e)
+        {
+            // Add any placed Harvest Statues to our cache
+            foreach (var tileObjectPair in e.Added.Where(o => o.Value.ParentSheetIndex == harvestStatueID))
+            {
+                saveData.SavedStatueData.Add(new HarvestStatueData(e.Location.Name, tileObjectPair.Key));
+            }
+
+            // Remove any destroyed Harvest Statues from our cache
+            foreach (var tileObjectPair in e.Removed.Where(o => o.Value.ParentSheetIndex == harvestStatueID))
+            {
+                Monitor.Log($"Removing Harvest Statue from cache [{saveData.SavedStatueData.Count}] {tileObjectPair.Key.X},{tileObjectPair.Key.Y}", LogLevel.Debug);
+                saveData.SavedStatueData = saveData.SavedStatueData.Where(s => !(s.GameLocation == e.Location.Name && s.Tile.Equals(tileObjectPair.Key))).ToList();
+                Monitor.Log($"Current statues remaining: [{saveData.SavedStatueData.Count}]", LogLevel.Debug);
+            }
         }
 
         private void OnIdsAssigned(object sender, EventArgs e)
         {
-            Monitor.Log(ApiManager.GetHarvestStatueID().ToString(), LogLevel.Debug);
+            // Get the Harvest Statue item ID
+            harvestStatueID = ApiManager.GetHarvestStatueID();
         }
 
         private void OnSaving(object sender, SavingEventArgs e)
         {
-            // Find all the HarvestStatue objects and convert them to a chest
-            foreach (GameLocation location in Game1.locations.Where(l => !l.IsOutdoors))
-            {
-                Monitor.Log($"Going through all indoor locations to remove statue [{ApiManager.GetHarvestStatueID()}]...", LogLevel.Debug);
-                List<Vector2> tiles = new List<Vector2>();
-                foreach (Vector2 statueLocation in location.netObjects.Keys.Where(v => location.netObjects[v].ParentSheetIndex == ApiManager.GetHarvestStatueID()))
-                {
-                    Monitor.Log($"Removing [{location.netObjects[statueLocation].parentSheetIndex}] statue at [{location.name}] {statueLocation.X},{statueLocation.Y}", LogLevel.Debug);
-                    tiles.Add(statueLocation);
-                }
+            // Save the cache
+            this.Helper.Data.WriteJsonFile(saveDataCachePath, saveData);
 
-                foreach (Vector2 position in tiles)
-                {
-                    location.netObjects.Remove(position);
-                }
+            // Find all the HarvestStatue objects and convert them to a chest
+            foreach (HarvestStatueData statueData in saveData.SavedStatueData)
+            {
+                GameLocation location = Game1.getLocationFromName(statueData.GameLocation);
+                location.removeObject(statueData.Tile, false);
             }
+            return;
+        }
+
+        private void LoadHarvestStatuesFromCache()
+        {
+            // See if there is an old cache we need to read, otherwise load in a new cache
+            saveData = new SaveData();
+            saveDataCachePath = $"data/{Constants.SaveFolderName}.json";
+
+            var saveDataCache = this.Helper.Data.ReadJsonFile<SaveData>(saveDataCachePath);
+            if (saveDataCache is null)
+            {
+                return;
+            }
+
+            foreach (var statueData in saveDataCache.SavedStatueData)
+            {
+                GameLocation location = Game1.getLocationFromName(statueData.GameLocation);
+                location.setObject(statueData.Tile, new HarvestStatue(statueData.Tile, harvestStatueID));
+            }
+        }
+
+        private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+        {
+            LoadHarvestStatuesFromCache();
+        }
+
+        private void OnDayStarted(object sender, DayStartedEventArgs e)
+        {
+            LoadHarvestStatuesFromCache();
         }
     }
 }
