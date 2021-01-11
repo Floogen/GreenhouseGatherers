@@ -12,7 +12,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.API
     {
         private static string modID;
         private static IJsonAssetApi jsonAssetApi;
-        private static IMonitor monitor = Resources.GetMonitor();
+        private static IMonitor monitor = ModResources.GetMonitor();
 
         public static void HookIntoJsonAssets(IModHelper helper)
         {

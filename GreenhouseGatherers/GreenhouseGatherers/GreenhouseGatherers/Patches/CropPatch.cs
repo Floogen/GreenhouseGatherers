@@ -16,7 +16,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
     [HarmonyPatch]
     public class CropPatch
     {
-        private static IMonitor monitor = Resources.GetMonitor();
+        private static IMonitor monitor = ModResources.GetMonitor();
 
         internal static MethodInfo TargetMethod()
         {

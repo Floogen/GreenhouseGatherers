@@ -23,7 +23,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         public override void Entry(IModHelper helper)
         {
             // Load the monitor
-            Resources.LoadMonitor(this.Monitor);
+            ModResources.LoadMonitor(this.Monitor);
 
             // Load our Harmony patches
             try

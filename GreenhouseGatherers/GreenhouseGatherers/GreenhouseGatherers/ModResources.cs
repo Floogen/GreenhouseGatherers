@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GreenhouseGatherers
 {
-    public static class Resources
+    public static class ModResources
     {
         private static IMonitor monitor;
 
