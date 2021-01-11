@@ -5,6 +5,7 @@ using StardewModdingAPI;
 using GreenhouseGatherers.GreenhouseGatherers.Objects;
 using Microsoft.Xna.Framework;
 using StardewValley.Menus;
+using System.Linq;
 
 namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 {
@@ -25,7 +26,15 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
                 if (location.IsOutdoors)
                 {
                     monitor.Log("Attempted to place Harvest Statue outdoors!", LogLevel.Trace);
-                    Game1.activeClickableMenu = new DialogueBox("Harvest Statues can only be placed indoors!");
+                    Game1.showRedMessage("Harvest Statues can only be placed indoors!");
+
+                    return false;
+                }
+
+                if (location.objects.Pairs.Any(p => p.Value.Name == "Harvest Statue"))
+                {
+                    monitor.Log("Attempted to place another Harvest Statue where there already is one!", LogLevel.Trace);
+                    Game1.showRedMessage("You can only place one Harvest Statue per building!");
 
                     return false;
                 }
