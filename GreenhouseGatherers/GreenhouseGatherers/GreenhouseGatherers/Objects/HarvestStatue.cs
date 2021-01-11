@@ -116,6 +116,14 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			}
 			this.fixLidFrame();
 			this.mutex.Update(environment);
+			if (base.shakeTimer > 0)
+			{
+				base.shakeTimer -= time.ElapsedGameTime.Milliseconds;
+				if (base.shakeTimer <= 0)
+				{
+					base.health = 10;
+				}
+			}
 
 			if ((bool)this.playerChest)
 			{
