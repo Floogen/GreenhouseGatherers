@@ -55,7 +55,6 @@
     <Compile Include="GreenhouseGatherers\API\Interfaces\IJsonAssetApi.cs" />
     <Compile Include="GreenhouseGatherers\ModConfig.cs" />
     <Compile Include="GreenhouseGatherers\Models\HarvestStatueData.cs" />
-    <Compile Include="GreenhouseGatherers\Models\IngredientData.cs" />
     <Compile Include="GreenhouseGatherers\Models\SaveData.cs" />
     <Compile Include="GreenhouseGatherers\ModEntry.cs" />
     <Compile Include="GreenhouseGatherers\Objects\HarvestStatue.cs" />
