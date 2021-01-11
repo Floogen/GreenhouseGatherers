@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Netcode;
+using StardewModdingAPI;
 using StardewValley;
 using StardewValley.TerrainFeatures;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 	[XmlInclude(typeof(HarvestStatue))]
 	public class HarvestStatue : StardewValley.Objects.Chest
     {
+		private IMonitor monitor = ModResources.GetMonitor();
 		protected override void initNetFields()
 		{
 			base.initNetFields();
@@ -38,19 +40,27 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 		public void HarvestCrops(GameLocation location)
         {
 			// Search for crops
-			foreach (KeyValuePair<Vector2, TerrainFeature> tileToHoeDirt in location.terrainFeatures.Pairs.Where(p => p.Value is HoeDirt))
+			foreach (KeyValuePair<Vector2, TerrainFeature> tileToHoeDirt in location.terrainFeatures.Pairs.Where(p => p.Value is HoeDirt && (p.Value as HoeDirt).crop != null))
             {
 				Vector2 tile = tileToHoeDirt.Key;
 				HoeDirt hoeDirt = (tileToHoeDirt.Value as HoeDirt);
 
 				Crop crop = hoeDirt.crop;
-				if (crop is null || !crop.fullyGrown)
+				if (!hoeDirt.readyForHarvest())
                 {
+					// Crop is either not fully grown or it has not regrown since last harvest
+					monitor.Log($"Crop at ({tile.X}, {tile.Y}) is not ready for harvesting: {crop.fullyGrown} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
 					continue;
                 }
 
 				// Crop exists and is fully grown, harvest it
+				monitor.Log($"Harvesting crop at ({tile.X}, {tile.Y}): {crop.fullyGrown} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
 				crop.harvest((int)tile.X, (int)tile.Y, hoeDirt, null);
+
+				if (crop.regrowAfterHarvest == -1)
+                {
+					hoeDirt.destroyCrop(tileLocation, false, location);
+                }
 			}
         }
 
