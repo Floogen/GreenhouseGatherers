@@ -9,7 +9,7 @@ using StardewValley.Menus;
 namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 {
     [HarmonyPatch]
-    public class FurniturePatch
+    public class ObjectPatch
     {
         private static IMonitor monitor = Resources.GetMonitor();
 
