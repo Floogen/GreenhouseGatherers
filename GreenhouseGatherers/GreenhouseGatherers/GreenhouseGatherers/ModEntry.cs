@@ -77,9 +77,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             // Remove any destroyed Harvest Statues from our cache
             foreach (var tileObjectPair in e.Removed.Where(o => o.Value.ParentSheetIndex == harvestStatueID))
             {
-                Monitor.Log($"Removing Harvest Statue from cache [{saveData.SavedStatueData.Count}] {tileObjectPair.Key.X},{tileObjectPair.Key.Y}", LogLevel.Debug);
                 saveData.SavedStatueData = saveData.SavedStatueData.Where(s => !(s.GameLocation == e.Location.Name && s.Tile.Equals(tileObjectPair.Key))).ToList();
-                Monitor.Log($"Current statues remaining: [{saveData.SavedStatueData.Count}]", LogLevel.Debug);
             }
         }
 
