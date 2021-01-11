@@ -96,7 +96,19 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             foreach (HarvestStatueData statueData in saveData.SavedStatueData)
             {
                 GameLocation location = Game1.getLocationFromName(statueData.GameLocation);
-                location.removeObject(statueData.Tile, false);
+
+                // Get the items from the HarvestStatue object
+                HarvestStatue statueObj = location.getObjectAtTile((int)statueData.Tile.X, (int)statueData.Tile.Y) as HarvestStatue;
+
+                // Add the items from HarvestStatue to temp Chest, so the player will still have their items if mod is uninstalled
+                Chest chest = new Chest(true, statueData.Tile);
+                foreach (var item in statueObj.items)
+                {
+                    chest.addItem(item);
+                }
+
+                // Remove the HarvestStatue by placing the Chest
+                location.setObject(statueData.Tile, chest);
             }
             return;
         }
@@ -116,7 +128,19 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             foreach (var statueData in saveDataCache.SavedStatueData)
             {
                 GameLocation location = Game1.getLocationFromName(statueData.GameLocation);
-                location.setObject(statueData.Tile, new HarvestStatue(statueData.Tile, harvestStatueID));
+
+                // Get the items from the temp Chest object
+                Chest chest = location.getObjectAtTile((int)statueData.Tile.X, (int)statueData.Tile.Y) as Chest;
+
+                // Add the items from the temp Chest to the HarvestStatue
+                HarvestStatue statueObj = new HarvestStatue(statueData.Tile, harvestStatueID);
+                foreach (var item in chest.items)
+                {
+                    statueObj.addItem(item);
+                }
+
+                // Remove the temp Chest by placing HarvestStatue
+                location.setObject(statueData.Tile, statueObj);
             }
         }
 
