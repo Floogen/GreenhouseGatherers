@@ -141,6 +141,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
                 // Remove the temp Chest by placing HarvestStatue
                 location.setObject(statueData.Tile, statueObj);
+
+                // Gather any crops nearby
+                statueObj.HarvestCrops(location);
             }
         }
 
