@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Netcode;
 using StardewValley;
 using StardewValley.TerrainFeatures;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 		{
 			this.Name = "Harvest Statue";
 			base.type.Value = "Crafting";
+			base.startingLidFrame.Value = itemID;
 			base.bigCraftable.Value = true;
 			base.canBeSetDown.Value = true;
 		}
@@ -52,6 +54,19 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			}
         }
 
+
+		private void UpdateSprite()
+        {
+			if (!this.items.Any())
+			{
+				base.startingLidFrame.Value = this.ParentSheetIndex;
+			}
+			else
+            {
+				base.startingLidFrame.Value = this.ParentSheetIndex + 1;
+			}
+		}
+
 		public override bool placementAction(GameLocation location, int x, int y, Farmer who = null)
 		{
 			base.tileLocation.Value = new Vector2(x / 64, y / 64);
@@ -67,7 +82,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
 			this.GetMutex().RequestLock(delegate
 			{
-				this.frameCounter.Value = 5;
+				this.frameCounter.Value = 1;
 				Game1.playSound("stoneStep");
 				Game1.player.Halt();
 			});
@@ -91,6 +106,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 						{
 							Game1.playSound("clubhit");
 						}
+
 						base.shakeTimer = 100;
 					}
 				}
@@ -135,9 +151,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 				else if ((int)this.frameCounter == -1 && Game1.activeClickableMenu == null && this.GetMutex().IsLockHeld())
 				{
 					this.GetMutex().ReleaseLock();
-					this.frameCounter.Value = 2;
+					this.frameCounter.Value = 1;
 					environment.localSound("stoneStep");
 				}
+
+				UpdateSprite();
 			}
 		}
 	}
