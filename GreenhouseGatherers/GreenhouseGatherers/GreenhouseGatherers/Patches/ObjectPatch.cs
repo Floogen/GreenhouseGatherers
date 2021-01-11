@@ -31,7 +31,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
                     return false;
                 }
 
-                if (location.objects.Pairs.Any(p => p.Value.Name == "Harvest Statue"))
+                if (location.numberOfObjectsWithName("Harvest Statue") > 0)
                 {
                     monitor.Log("Attempted to place another Harvest Statue where there already is one!", LogLevel.Trace);
                     Game1.showRedMessage("You can only place one Harvest Statue per building!");
