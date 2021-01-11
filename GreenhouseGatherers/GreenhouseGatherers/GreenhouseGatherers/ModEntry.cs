@@ -16,9 +16,13 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 {
     public class ModEntry : Mod
     {
+        // Save related
         private SaveData saveData;
         private int harvestStatueID;
         private string saveDataCachePath;
+
+        // Config related
+        private ModConfig config;
 
         public override void Entry(IModHelper helper)
         {
@@ -34,6 +38,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             {
                 Monitor.Log($"Issue with Harmony patch: {e}", LogLevel.Error);
             }
+
+            // Load the config
+            this.config = helper.ReadConfig<ModConfig>();
 
             // Hook into the game launch
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
