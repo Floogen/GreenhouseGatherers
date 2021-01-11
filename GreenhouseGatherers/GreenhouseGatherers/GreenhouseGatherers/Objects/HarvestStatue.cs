@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using StardewValley;
-using System;
+using StardewValley.TerrainFeatures;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace GreenhouseGatherers.GreenhouseGatherers.Objects
@@ -34,6 +32,25 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			base.bigCraftable.Value = true;
 			base.canBeSetDown.Value = true;
 		}
+
+		public void HarvestCrops(GameLocation location)
+        {
+			// Search for crops
+			foreach (KeyValuePair<Vector2, TerrainFeature> tileToHoeDirt in location.terrainFeatures.Pairs.Where(p => p.Value is HoeDirt))
+            {
+				Vector2 tile = tileToHoeDirt.Key;
+				HoeDirt hoeDirt = (tileToHoeDirt.Value as HoeDirt);
+
+				Crop crop = hoeDirt.crop;
+				if (crop is null || !crop.fullyGrown)
+                {
+					continue;
+                }
+
+				// Crop exists and is fully grown, harvest it
+				crop.harvest((int)tile.X, (int)tile.Y, hoeDirt, null);
+			}
+        }
 
 		public override bool placementAction(GameLocation location, int x, int y, Farmer who = null)
 		{
