@@ -59,8 +59,8 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
 				if (crop.regrowAfterHarvest == -1)
                 {
-					hoeDirt.destroyCrop(tileLocation, false, location);
-                }
+					hoeDirt.crop = null;
+				}
 			}
         }
 
