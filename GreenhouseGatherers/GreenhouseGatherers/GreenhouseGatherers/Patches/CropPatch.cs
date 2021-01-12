@@ -66,10 +66,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 				}
 				Game1.stats.ItemsForaged += (uint)o.Stack;
 
-				// Add the forage crop to the HarvestStatue's inventory
+				// Try to add the forage crop to the HarvestStatue's inventory
 				if (statueObj.addItem(o) != null)
 				{
-					//Game1.showRedMessage($"The Harvest Statue at {soil.currentLocation.Name} is full, so the Junimos ate the extra crops!");
+					// Statue is full, flag it as being eaten
+					statueObj.ateCrops = true;
 				}
 
 				return false;
@@ -136,7 +137,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 				} : new Object(__instance.indexOfHarvest, 1, isRecipe: false, -1, cropQuality));
 				if ((int)__instance.harvestMethod == 1)
 				{
-					statueObj.addItem(harvestedItem.getOne());
+					if (statueObj.addItem(harvestedItem.getOne()) != null)
+                    {
+						// Statue is full, flag it as being eaten
+						statueObj.ateCrops = true;
+					}
 					success = true;
 				}
 				else if (statueObj.addItem(harvestedItem.getOne()) is null)
@@ -151,7 +156,8 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 				}
 				else
 				{
-					Game1.showRedMessage(Game1.content.LoadString("Strings\\StringsFromCSFiles:Crop.cs.588"));
+					// Statue is full, flag it as being eaten
+					statueObj.ateCrops = true;
 				}
 				if (success)
 				{
@@ -166,19 +172,31 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 
 					for (int i = 0; i < numToHarvest - 1; i++)
 					{
-						statueObj.addItem(harvestedItem.getOne());
+						if (statueObj.addItem(harvestedItem.getOne()) != null)
+						{
+							// Statue is full, flag it as being eaten
+							statueObj.ateCrops = true;
+						}
 					}
 					if ((int)__instance.indexOfHarvest == 262 && r.NextDouble() < 0.4)
 					{
 						Object hay_item = new Object(178, 1);
-						statueObj.addItem(hay_item.getOne());
+						if (statueObj.addItem(hay_item.getOne()) != null)
+						{
+							// Statue is full, flag it as being eaten
+							statueObj.ateCrops = true;
+						}
 					}
 					else if ((int)__instance.indexOfHarvest == 771)
 					{
 						if (r.NextDouble() < 0.1)
 						{
 							Object mixedSeeds_item = new Object(770, 1);
-							statueObj.addItem(mixedSeeds_item.getOne());
+							if (statueObj.addItem(mixedSeeds_item.getOne()) != null)
+							{
+								// Statue is full, flag it as being eaten
+								statueObj.ateCrops = true;
+							}
 						}
 					}
 					if ((int)__instance.regrowAfterHarvest == -1)
