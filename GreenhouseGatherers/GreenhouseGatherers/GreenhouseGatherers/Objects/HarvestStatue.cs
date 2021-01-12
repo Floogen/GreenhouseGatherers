@@ -17,6 +17,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
 		public bool harvestedToday = false;
 		public bool ateCrops = false; // Set via crop.harvest if config is enabled and capacity is at max
+		public List<Vector2> harvestedTiles = new List<Vector2>();
 
 		// Config related
 		private bool doJunimosEatExcessCrops = true;
@@ -103,6 +104,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 				// Crop exists and is fully grown, harvest it
 				crop.harvest((int)tile.X, (int)tile.Y, hoeDirt, null);
 				harvestedToday = true;
+				harvestedTiles.Add(tile);
 
 				// Clear any non-renewing crop
 				if (crop.regrowAfterHarvest == -1)
@@ -115,13 +117,15 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			List<Vector2> tilesToRemove = new List<Vector2>();
 			foreach (KeyValuePair<Vector2, Object> tileToForage in location.objects.Pairs.Where(p => p.Value.isForage(location)))
 			{
+				Vector2 tile = tileToForage.Key;
 				if (this.addItem(tileToForage.Value.getOne()) != null)
 				{
 					ateCrops = true;
 				}
 
-				tilesToRemove.Add(tileToForage.Key);
+				tilesToRemove.Add(tile);
 				harvestedToday = true;
+				harvestedTiles.Add(tile);
 			}
 
 			// Clean up the harvested forage products
