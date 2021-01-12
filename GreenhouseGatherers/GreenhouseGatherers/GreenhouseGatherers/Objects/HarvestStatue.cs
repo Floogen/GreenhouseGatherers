@@ -2,6 +2,7 @@
 using Netcode;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Menus;
 using StardewValley.Objects;
 using StardewValley.TerrainFeatures;
 using System.Collections.Generic;
@@ -202,6 +203,13 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 		}
 
 		public override bool placementAction(GameLocation location, int x, int y, Farmer who = null)
+        public override void ShowMenu()
+        {
+			// Set source to 0 so recolor doesn't show up
+			Game1.activeClickableMenu = new ItemGrabMenu(this.GetItemsForPlayer(Game1.player.UniqueMultiplayerID), reverseGrab: false, showReceivingMenu: true, InventoryMenu.highlightAllItems, grabItemFromInventory, null, grabItemFromChest, snapToBottom: false, canBeExitedWithKey: true, playRightClickSound: true, allowRightClick: true, showOrganizeButton: true, 0, this.fridge ? null : this, -1, this);
+		}
+
+        public override bool placementAction(GameLocation location, int x, int y, Farmer who = null)
 		{
 			base.tileLocation.Value = new Vector2(x / 64, y / 64);
 			return true;
