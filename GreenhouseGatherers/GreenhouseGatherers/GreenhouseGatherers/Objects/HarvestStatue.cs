@@ -53,20 +53,37 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 				if (!hoeDirt.readyForHarvest())
                 {
 					// Crop is either not fully grown or it has not regrown since last harvest
-					monitor.Log($"Crop at ({tile.X}, {tile.Y}) is not ready for harvesting: {crop.fullyGrown} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
+					//monitor.Log($"Crop at ({tile.X}, {tile.Y}) is not ready for harvesting: {crop.forageCrop} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
 					continue;
                 }
+				//monitor.Log($"Harvesting crop ({tile.X}, {tile.Y}): {crop.forageCrop} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
 
 				// Crop exists and is fully grown, harvest it
-				monitor.Log($"Harvesting crop at ({tile.X}, {tile.Y}): {crop.fullyGrown} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
 				crop.harvest((int)tile.X, (int)tile.Y, hoeDirt, null);
 				harvestedToday = true;
 
+				// Clear any non-renewing crop
 				if (crop.regrowAfterHarvest == -1)
                 {
 					hoeDirt.crop = null;
 				}
 			}
+
+			// Search for forage products
+			List<Vector2> tilesToRemove = new List<Vector2>();
+			foreach (KeyValuePair<Vector2, Object> tileToForage in location.objects.Pairs.Where(p => p.Value.isForage(location)))
+            {
+				if (this.addItem(tileToForage.Value.getOne()) != null)
+                {
+					ateCrops = true;
+                }
+
+				tilesToRemove.Add(tileToForage.Key);
+				harvestedToday = true;
+			}
+
+			// Clean up the harvested forage products
+			tilesToRemove.ForEach(t => location.removeObject(t, false));
 
 			// Check if the Junimos ate the crops due to no inventory space
 			if (ateCrops)
