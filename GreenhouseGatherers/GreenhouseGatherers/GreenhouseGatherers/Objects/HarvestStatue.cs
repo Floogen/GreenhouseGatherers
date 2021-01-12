@@ -64,7 +64,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			}
         }
 
-		public void SetItems(NetObjectList<Item> items)
+		public void AddItems(NetObjectList<Item> items)
         {
 			foreach (var item in items)
 			{

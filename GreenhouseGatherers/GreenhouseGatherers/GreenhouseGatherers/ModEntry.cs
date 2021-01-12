@@ -141,7 +141,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
                 // Add the items from the temp Chest to the HarvestStatue
                 HarvestStatue statueObj = new HarvestStatue(statueData.Tile, harvestStatueID);
-                statueObj.SetItems(chest.items);
+                statueObj.AddItems(chest.items);
 
                 // Remove the temp Chest by placing HarvestStatue
                 location.setObject(statueData.Tile, statueObj);
