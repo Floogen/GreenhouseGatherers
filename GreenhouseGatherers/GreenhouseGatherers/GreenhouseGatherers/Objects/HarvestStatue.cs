@@ -44,7 +44,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
 		}
 
-		public HarvestStatue(Vector2 position, int itemID, bool enableHarvestMessage, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, itemID)
+		public HarvestStatue(Vector2 position, int itemID, bool enableHarvestMessage = true, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, itemID)
 		{
 			this.Name = "Harvest Statue";
 			this.enableHarvestMessage = enableHarvestMessage;
