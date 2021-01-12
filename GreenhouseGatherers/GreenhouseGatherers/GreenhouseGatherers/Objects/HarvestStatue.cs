@@ -13,6 +13,10 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 	public class HarvestStatue : StardewValley.Objects.Chest
     {
 		private IMonitor monitor = ModResources.GetMonitor();
+
+		public bool harvestedToday = false;
+		public bool ateCrops = false; // Set via crop.harvest if config is enabled and capacity is at max
+
 		protected override void initNetFields()
 		{
 			base.initNetFields();
@@ -56,13 +60,28 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 				// Crop exists and is fully grown, harvest it
 				monitor.Log($"Harvesting crop at ({tile.X}, {tile.Y}): {crop.fullyGrown} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
 				crop.harvest((int)tile.X, (int)tile.Y, hoeDirt, null);
+				harvestedToday = true;
 
 				if (crop.regrowAfterHarvest == -1)
                 {
 					hoeDirt.crop = null;
 				}
 			}
-        }
+
+			// Check if the Junimos ate the crops due to no inventory space
+			if (ateCrops)
+			{
+				Game1.showRedMessage($"The Junimos at the {location.Name} ate harvested crops due to lack of storage!");
+				return;
+			}
+			
+			if (harvestedToday)
+            {
+				// Let the player know we harvested
+				Game1.addHUDMessage(new HUDMessage($"The Junimos at the {location.Name} have harvested crops.", 2));
+				return;
+			}
+		}
 
 		public void AddItems(NetObjectList<Item> items)
         {
