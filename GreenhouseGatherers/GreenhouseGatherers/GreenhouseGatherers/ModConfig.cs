@@ -15,6 +15,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         public bool DoJunimosHarvestFromFruitTrees { get; set; }
 
         public int MaxAmountOfJunimosToAppearAfterHarvest { get; set; }
+        public int MinimumFruitOnTreeBeforeHarvest { get; set; }
 
         public ModConfig()
         {
@@ -24,6 +25,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             DoJunimosHarvestFromFruitTrees = true;
 
             MaxAmountOfJunimosToAppearAfterHarvest = -1;
+            MinimumFruitOnTreeBeforeHarvest = 3;
         }
     }
 }
