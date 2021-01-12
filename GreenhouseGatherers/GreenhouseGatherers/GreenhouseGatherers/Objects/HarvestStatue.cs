@@ -106,8 +106,14 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			// Look and harvest for crops & forage products inside IndoorPots
 			if (doJunimosHarvestFromPots)
             {
-				monitor.Log("Searching for crops and forage products within IndoorPots...", LogLevel.Trace);
+				monitor.Log("Searching for crops and forage products within Garden Pots...", LogLevel.Trace);
 				SearchForIndoorPots(location);
+			}
+
+			if (doJunimosHarvestFromFruitTrees)
+            {
+				monitor.Log("Searching for fruits from Fruit Trees...", LogLevel.Trace);
+				SearchForFruitTrees(location);
 			}
 
 			// Check if the Junimos ate the crops due to no inventory space
@@ -217,6 +223,63 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 					pot.heldObject.Value = null;
 					harvestedToday = true;
 				}
+			}
+		}
+
+		private void SearchForFruitTrees(GameLocation location)
+        {
+			// Search for fruit trees
+			if (minimumFruitOnTreeBeforeHarvest > 3)
+            {
+				minimumFruitOnTreeBeforeHarvest = 3;
+			}
+
+			foreach (KeyValuePair<Vector2, TerrainFeature> tileToFruitTree in location.terrainFeatures.Pairs.Where(p => p.Value is FruitTree && (p.Value as FruitTree).fruitsOnTree >= minimumFruitOnTreeBeforeHarvest))
+            {
+				Vector2 tile = tileToFruitTree.Key;
+				FruitTree fruitTree = (tileToFruitTree.Value as FruitTree);
+
+				// Determine fruit quality per the game's original code
+				int fruitQuality = 0;
+				if (fruitTree.daysUntilMature <= -112)
+				{
+					fruitQuality = 1;
+				}
+				if (fruitTree.daysUntilMature <= -224)
+				{
+					fruitQuality = 2;
+				}
+				if (fruitTree.daysUntilMature <= -336)
+				{
+					fruitQuality = 4;
+				}
+
+				for (int j = 0; j < fruitTree.fruitsOnTree; j++)
+				{
+					Vector2 offset = new Vector2(0f, 0f);
+					switch (j)
+					{
+						case 0:
+							offset.X = -64f;
+							break;
+						case 1:
+							offset.X = 64f;
+							offset.Y = -32f;
+							break;
+						case 2:
+							offset.Y = 32f;
+							break;
+					}
+
+					if (this.addItem(new Object(fruitTree.indexOfFruit, 1, quality: fruitQuality)) != null)
+					{
+						ateCrops = true;
+					}
+				}
+
+				fruitTree.fruitsOnTree.Value = 0;
+
+				harvestedToday = true;
 			}
 		}
 
