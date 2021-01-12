@@ -2,6 +2,7 @@
 using Netcode;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Objects;
 using StardewValley.TerrainFeatures;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,47 +54,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 				Game1.showRedMessage($"The Junimos at the {location.Name} couldn't harvest due to lack of storage!");
 			}
 
-			// Search for crops
-			foreach (KeyValuePair<Vector2, TerrainFeature> tileToHoeDirt in location.terrainFeatures.Pairs.Where(p => p.Value is HoeDirt && (p.Value as HoeDirt).crop != null))
-            {
-				Vector2 tile = tileToHoeDirt.Key;
-				HoeDirt hoeDirt = (tileToHoeDirt.Value as HoeDirt);
+			// Look and harvest for crops & forage products on the ground
+			SearchForGroundCrops(location);
 
-				Crop crop = hoeDirt.crop;
-				if (!hoeDirt.readyForHarvest())
-                {
-					// Crop is either not fully grown or it has not regrown since last harvest
-					//monitor.Log($"Crop at ({tile.X}, {tile.Y}) is not ready for harvesting: {crop.forageCrop} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
-					continue;
-                }
-				//monitor.Log($"Harvesting crop ({tile.X}, {tile.Y}): {crop.forageCrop} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
-
-				// Crop exists and is fully grown, harvest it
-				crop.harvest((int)tile.X, (int)tile.Y, hoeDirt, null);
-				harvestedToday = true;
-
-				// Clear any non-renewing crop
-				if (crop.regrowAfterHarvest == -1)
-                {
-					hoeDirt.crop = null;
-				}
-			}
-
-			// Search for forage products
-			List<Vector2> tilesToRemove = new List<Vector2>();
-			foreach (KeyValuePair<Vector2, Object> tileToForage in location.objects.Pairs.Where(p => p.Value.isForage(location)))
-            {
-				if (this.addItem(tileToForage.Value.getOne()) != null)
-                {
-					ateCrops = true;
-                }
-
-				tilesToRemove.Add(tileToForage.Key);
-				harvestedToday = true;
-			}
-
-			// Clean up the harvested forage products
-			tilesToRemove.ForEach(t => location.removeObject(t, false));
+			// Look and harvest for crops & forage products inside IndoorPots
+			SearchForIndoorPots(location);
 
 			// Check if the Junimos ate the crops due to no inventory space
 			if (ateCrops)
@@ -107,6 +72,98 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 				// Let the player know we harvested
 				Game1.addHUDMessage(new HUDMessage($"The Junimos at the {location.Name} have harvested crops.", 2));
 				return;
+			}
+		}
+
+		private void SearchForGroundCrops(GameLocation location)
+        {
+			// Search for crops
+			foreach (KeyValuePair<Vector2, TerrainFeature> tileToHoeDirt in location.terrainFeatures.Pairs.Where(p => p.Value is HoeDirt && (p.Value as HoeDirt).crop != null))
+			{
+				Vector2 tile = tileToHoeDirt.Key;
+				HoeDirt hoeDirt = (tileToHoeDirt.Value as HoeDirt);
+
+				Crop crop = hoeDirt.crop;
+				if (!hoeDirt.readyForHarvest())
+				{
+					// Crop is either not fully grown or it has not regrown since last harvest
+					//monitor.Log($"Crop at ({tile.X}, {tile.Y}) is not ready for harvesting: {crop.forageCrop} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
+					continue;
+				}
+				//monitor.Log($"Harvesting crop ({tile.X}, {tile.Y}): {crop.forageCrop} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
+
+				// Crop exists and is fully grown, harvest it
+				crop.harvest((int)tile.X, (int)tile.Y, hoeDirt, null);
+				harvestedToday = true;
+
+				// Clear any non-renewing crop
+				if (crop.regrowAfterHarvest == -1)
+				{
+					hoeDirt.crop = null;
+				}
+			}
+
+			// Search for forage products
+			List<Vector2> tilesToRemove = new List<Vector2>();
+			foreach (KeyValuePair<Vector2, Object> tileToForage in location.objects.Pairs.Where(p => p.Value.isForage(location)))
+			{
+				if (this.addItem(tileToForage.Value.getOne()) != null)
+				{
+					ateCrops = true;
+				}
+
+				tilesToRemove.Add(tileToForage.Key);
+				harvestedToday = true;
+			}
+
+			// Clean up the harvested forage products
+			tilesToRemove.ForEach(t => location.removeObject(t, false));
+		}
+
+		private void SearchForIndoorPots(GameLocation location)
+        {
+			// Search for IndoorPots with crops
+			foreach (KeyValuePair<Vector2, Object> tileToIndoorPot in location.objects.Pairs.Where(p => p.Value is IndoorPot))
+			{
+				Vector2 tile = tileToIndoorPot.Key;
+				IndoorPot pot = tileToIndoorPot.Value as IndoorPot;
+				HoeDirt hoeDirt = pot.hoeDirt.Value;
+
+				// HoeDirt seems to be missing its currentLocation when coming from IndoorPots, which is problematic for Crop.harvest()
+				if (hoeDirt.currentLocation is null)
+                {
+					hoeDirt.currentLocation = location;
+				}
+
+				if (hoeDirt.readyForHarvest())
+				{
+					hoeDirt.crop.harvest((int)tile.X, (int)tile.Y, hoeDirt, null);
+					harvestedToday = true;
+
+					// Clear any non-renewing crop
+					if (hoeDirt.crop.regrowAfterHarvest == -1)
+					{
+						hoeDirt.crop = null;
+					}
+				}
+			}
+
+			// Search for IndoorPots with forage items
+			foreach (KeyValuePair<Vector2, Object> tileToIndoorPot in location.objects.Pairs.Where(p => p.Value is IndoorPot))
+			{
+				Vector2 tile = tileToIndoorPot.Key;
+				IndoorPot pot = tileToIndoorPot.Value as IndoorPot;
+
+				if (pot.heldObject.Value != null && pot.heldObject.Value.isForage(location))
+				{
+					if (this.addItem(pot.heldObject.Value.getOne()) != null)
+					{
+						ateCrops = true;
+					}
+
+					pot.heldObject.Value = null;
+					harvestedToday = true;
+				}
 			}
 		}
 
