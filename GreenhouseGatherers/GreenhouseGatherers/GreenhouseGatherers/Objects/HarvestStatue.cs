@@ -2,6 +2,7 @@
 using Netcode;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Characters;
 using StardewValley.Menus;
 using StardewValley.Objects;
 using StardewValley.TerrainFeatures;
@@ -51,6 +52,40 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			base.bigCraftable.Value = true;
 			base.canBeSetDown.Value = true;
 		}
+
+		public void SpawnJunimos(GameLocation location, int maxJunimosToSpawn = -1)
+        {
+			if (!harvestedToday || harvestedTiles.Count == 0)
+            {
+				return;
+            }
+
+			if (maxJunimosToSpawn == -1)
+            {
+				maxJunimosToSpawn = harvestedTiles.Count / 2;
+			}
+
+			for (int x = 0; x < Game1.random.Next(1, maxJunimosToSpawn); x++)
+            {
+				Vector2 tile = location.getRandomTile();
+
+				if (location.isWaterTile((int)tile.X, (int)tile.Y) || !location.isTileLocationTotallyClearAndPlaceable(tile))
+                {
+					continue;
+                }
+
+				Junimo j = new Junimo(tile * 64f, 6, false);
+				if (!location.isCollidingPosition(j.GetBoundingBox(), Game1.viewport, j))
+				{
+					location.characters.Add(j);
+				}
+
+				//monitor.Log($"Spawning some Junimos at {location.Name}: {tile.X}, {tile.Y}.", LogLevel.Debug);
+			}
+			Game1.playSound("tinyWhip");
+
+			hasSpawnedJunimos = true;
+        }
 
 		public void HarvestCrops(GameLocation location)
         {

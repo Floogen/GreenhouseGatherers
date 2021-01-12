@@ -46,9 +46,30 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             // Hook into ObjectListChanged event so we can catch when Harvest Statues are placed / removed
             helper.Events.World.ObjectListChanged += this.OnObjectListChanged;
 
+            // Hook into Player.Warped event so we can spawn some Junimos if the area was recently harvested
+            helper.Events.Player.Warped += this.OnWarped;
+
             // Hook into save related events
             helper.Events.GameLoop.Saving += this.OnSaving;
             helper.Events.GameLoop.DayStarted += this.OnDayStarted;
+        }
+
+        private void OnWarped(object sender, WarpedEventArgs e)
+        {
+            if (!config.DoJunimosAppearAfterHarvest || e.NewLocation.numberOfObjectsWithName("Harvest Statue") == 0)
+            {
+                return;
+            }
+
+            // Location contains a Harvest Statue, see if we need to spawn Junimos
+            HarvestStatue statueObj = e.NewLocation.objects.Pairs.First(p => p.Value.Name == "Harvest Statue").Value as HarvestStatue;
+            if (statueObj.hasSpawnedJunimos)
+            {
+                return;
+            }
+
+            // Harvest Statue hasn't spawned some Junimos yet, so spawn a few temp ones for fluff
+            statueObj.SpawnJunimos(e.NewLocation, config.MaxAmountOfJunimosToAppearAfterHarvest);
         }
 
         public void harmonyPatch()
