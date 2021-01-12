@@ -171,7 +171,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
-            if (!Game1.MasterPlayer.mailReceived.Contains("WizardHarvestStatueRecipe") && Game1.MasterPlayer.mailReceived.Contains("hasPickedUpMagicInk"))
+            if (!Game1.MasterPlayer.mailReceived.Contains("WizardHarvestStatueRecipe") && (config.ForceRecipeUnlock || Game1.MasterPlayer.mailReceived.Contains("hasPickedUpMagicInk")))
             {
                 Helper.Content.AssetEditors.Add(new RecipeMail());
                 Game1.MasterPlayer.mailbox.Add("WizardHarvestStatueRecipe");
