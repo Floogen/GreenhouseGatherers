@@ -59,6 +59,7 @@
     <Compile Include="GreenhouseGatherers\ModEntry.cs" />
     <Compile Include="GreenhouseGatherers\Objects\HarvestStatue.cs" />
     <Compile Include="GreenhouseGatherers\Patches\CropPatch.cs" />
+    <Compile Include="GreenhouseGatherers\Patches\JunimoPatch.cs" />
     <Compile Include="GreenhouseGatherers\Patches\ObjectPatch.cs" />
     <Compile Include="GreenhouseGatherers\ModResources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
