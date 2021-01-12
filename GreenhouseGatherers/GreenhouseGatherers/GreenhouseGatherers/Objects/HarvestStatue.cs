@@ -23,6 +23,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 		public List<Vector2> harvestedTiles = new List<Vector2>();
 
 		// Config related
+		private bool enableHarvestMessage = true;
 		private bool doJunimosEatExcessCrops = true;
 		private bool doJunimosHarvestFromPots = true;
 		private bool doJunimosHarvestFromFruitTrees = true;
@@ -43,9 +44,10 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
 		}
 
-		public HarvestStatue(Vector2 position, int itemID, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, itemID)
+		public HarvestStatue(Vector2 position, int itemID, bool enableHarvestMessage, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, itemID)
 		{
 			this.Name = "Harvest Statue";
+			this.enableHarvestMessage = enableHarvestMessage;
 			this.doJunimosEatExcessCrops = doJunimosEatExcessCrops;
 			this.doJunimosHarvestFromPots = doJunimosHarvestFromPots;
 			this.doJunimosHarvestFromFruitTrees = doJunimosHarvestFromFruitTrees;
@@ -123,7 +125,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 				return;
 			}
 			
-			if (harvestedToday)
+			if (harvestedToday && enableHarvestMessage)
             {
 				// Let the player know we harvested
 				Game1.addHUDMessage(new HUDMessage($"The Junimos at the {location.Name} have harvested crops.", 2));

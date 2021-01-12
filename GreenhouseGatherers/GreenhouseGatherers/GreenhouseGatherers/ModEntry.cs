@@ -158,7 +158,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 Chest chest = location.getObjectAtTile((int)statueData.Tile.X, (int)statueData.Tile.Y) as Chest;
 
                 // Add the items from the temp Chest to the HarvestStatue
-                HarvestStatue statueObj = new HarvestStatue(statueData.Tile, harvestStatueID, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.MinimumFruitOnTreeBeforeHarvest);
+                HarvestStatue statueObj = new HarvestStatue(statueData.Tile, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.MinimumFruitOnTreeBeforeHarvest);
                 statueObj.AddItems(chest.items);
 
                 // Remove the temp Chest by placing HarvestStatue
