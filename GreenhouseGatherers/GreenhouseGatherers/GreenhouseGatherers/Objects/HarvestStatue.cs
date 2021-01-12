@@ -17,6 +17,8 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 		public bool harvestedToday = false;
 		public bool ateCrops = false; // Set via crop.harvest if config is enabled and capacity is at max
 
+		private bool doJunimosEatExcessCrops = true;
+
 		protected override void initNetFields()
 		{
 			base.initNetFields();
@@ -32,9 +34,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
 		}
 
-		public HarvestStatue(Vector2 position, int itemID) : base(true, position, itemID)
+		public HarvestStatue(Vector2 position, int itemID, bool doJunimosEatExcessCrops = true) : base(true, position, itemID)
 		{
 			this.Name = "Harvest Statue";
+			this.doJunimosEatExcessCrops = doJunimosEatExcessCrops;
+
 			base.type.Value = "Crafting";
 			base.startingLidFrame.Value = itemID;
 			base.bigCraftable.Value = true;
@@ -43,6 +47,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
 		public void HarvestCrops(GameLocation location)
         {
+			// Check if we're at capacity and that Junimos aren't allowed to eat excess crops
+			if (this.items.Count >= this.GetActualCapacity() && !doJunimosEatExcessCrops)
+            {
+				Game1.showRedMessage($"The Junimos at the {location.Name} couldn't harvest due to lack of storage!");
+			}
+
 			// Search for crops
 			foreach (KeyValuePair<Vector2, TerrainFeature> tileToHoeDirt in location.terrainFeatures.Pairs.Where(p => p.Value is HoeDirt && (p.Value as HoeDirt).crop != null))
             {
