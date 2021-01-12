@@ -18,7 +18,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 		public bool harvestedToday = false;
 		public bool ateCrops = false; // Set via crop.harvest if config is enabled and capacity is at max
 
+		// Config related
 		private bool doJunimosEatExcessCrops = true;
+		private bool doJunimosHarvestFromPots = true;
 
 		protected override void initNetFields()
 		{
@@ -35,10 +37,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
 		}
 
-		public HarvestStatue(Vector2 position, int itemID, bool doJunimosEatExcessCrops = true) : base(true, position, itemID)
+		public HarvestStatue(Vector2 position, int itemID, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true) : base(true, position, itemID)
 		{
 			this.Name = "Harvest Statue";
 			this.doJunimosEatExcessCrops = doJunimosEatExcessCrops;
+			this.doJunimosHarvestFromPots = doJunimosHarvestFromPots;
 
 			base.type.Value = "Crafting";
 			base.startingLidFrame.Value = itemID;
