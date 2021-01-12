@@ -58,10 +58,15 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			}
 
 			// Look and harvest for crops & forage products on the ground
+			monitor.Log("Searching for crops and forage products on ground...", LogLevel.Trace);
 			SearchForGroundCrops(location);
 
 			// Look and harvest for crops & forage products inside IndoorPots
-			SearchForIndoorPots(location);
+			if (doJunimosHarvestFromPots)
+            {
+				monitor.Log("Searching for crops and forage products within IndoorPots...", LogLevel.Trace);
+				SearchForIndoorPots(location);
+			}
 
 			// Check if the Junimos ate the crops due to no inventory space
 			if (ateCrops)
