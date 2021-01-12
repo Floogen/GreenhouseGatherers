@@ -8,8 +8,6 @@ using Harmony;
 using StardewValley;
 using System.Linq;
 using GreenhouseGatherers.GreenhouseGatherers.Objects;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using GreenhouseGatherers.GreenhouseGatherers.Models;
 
 namespace GreenhouseGatherers.GreenhouseGatherers
@@ -50,7 +48,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
             // Hook into save related events
             helper.Events.GameLoop.Saving += this.OnSaving;
-            helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
             helper.Events.GameLoop.DayStarted += this.OnDayStarted;
         }
 
@@ -149,11 +146,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 // Gather any crops nearby
                 statueObj.HarvestCrops(location);
             }
-        }
-
-        private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
-        {
-            LoadHarvestStatuesFromCache();
         }
 
         private void OnDayStarted(object sender, DayStartedEventArgs e)

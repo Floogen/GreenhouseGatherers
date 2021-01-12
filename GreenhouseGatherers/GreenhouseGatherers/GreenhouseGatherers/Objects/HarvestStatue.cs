@@ -16,8 +16,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
     {
 		private IMonitor monitor = ModResources.GetMonitor();
 
+		public bool ateCrops = false;
 		public bool harvestedToday = false;
-		public bool ateCrops = false; // Set via crop.harvest if config is enabled and capacity is at max
+		public bool hasSpawnedJunimos = false;
 		public List<Vector2> harvestedTiles = new List<Vector2>();
 
 		// Config related
@@ -85,7 +86,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			}
 		}
 
-		private void SearchForGroundCrops(GameLocation location)
+        private void SearchForGroundCrops(GameLocation location)
         {
 			// Search for crops
 			foreach (KeyValuePair<Vector2, TerrainFeature> tileToHoeDirt in location.terrainFeatures.Pairs.Where(p => p.Value is HoeDirt && (p.Value as HoeDirt).crop != null))
@@ -202,7 +203,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			}
 		}
 
-		public override bool placementAction(GameLocation location, int x, int y, Farmer who = null)
         public override void ShowMenu()
         {
 			// Set source to 0 so recolor doesn't show up
@@ -300,5 +300,5 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 				UpdateSprite();
 			}
 		}
-	}
+    }
 }
