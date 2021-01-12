@@ -9,9 +9,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 {
     public class ModConfig
     {
+        public bool DoJunimosEatExcessCrops { get; set; }
+
         public ModConfig()
         {
-
+            DoJunimosEatExcessCrops = true;
         }
     }
 }
