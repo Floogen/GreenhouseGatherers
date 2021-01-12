@@ -25,6 +25,8 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 		// Config related
 		private bool doJunimosEatExcessCrops = true;
 		private bool doJunimosHarvestFromPots = true;
+		private bool doJunimosHarvestFromFruitTrees = true;
+		private int minimumFruitOnTreeBeforeHarvest = 3;
 
 		protected override void initNetFields()
 		{
@@ -41,11 +43,13 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
 		}
 
-		public HarvestStatue(Vector2 position, int itemID, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true) : base(true, position, itemID)
+		public HarvestStatue(Vector2 position, int itemID, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, itemID)
 		{
 			this.Name = "Harvest Statue";
 			this.doJunimosEatExcessCrops = doJunimosEatExcessCrops;
 			this.doJunimosHarvestFromPots = doJunimosHarvestFromPots;
+			this.doJunimosHarvestFromFruitTrees = doJunimosHarvestFromFruitTrees;
+			this.minimumFruitOnTreeBeforeHarvest = minimumFruitOnTreeBeforeHarvest;
 
 			base.type.Value = "Crafting";
 			base.startingLidFrame.Value = itemID;
