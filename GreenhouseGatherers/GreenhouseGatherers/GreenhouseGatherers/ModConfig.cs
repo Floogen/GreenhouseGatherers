@@ -12,6 +12,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         public bool DoJunimosEatExcessCrops { get; set; }
         public bool DoJunimosHarvestFromPots { get; set; }
         public bool DoJunimosAppearAfterHarvest { get; set; }
+        public bool DoJunimosHarvestFromFruitTrees { get; set; }
 
         public int MaxAmountOfJunimosToAppearAfterHarvest { get; set; }
 
@@ -20,6 +21,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             DoJunimosEatExcessCrops = true;
             DoJunimosHarvestFromPots = true;
             DoJunimosAppearAfterHarvest = true;
+            DoJunimosHarvestFromFruitTrees = true;
 
             MaxAmountOfJunimosToAppearAfterHarvest = -1;
         }
