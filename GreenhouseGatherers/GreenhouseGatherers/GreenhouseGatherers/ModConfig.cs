@@ -11,11 +11,13 @@ namespace GreenhouseGatherers.GreenhouseGatherers
     {
         public bool DoJunimosEatExcessCrops { get; set; }
         public bool DoJunimosHarvestFromPots { get; set; }
+        public bool DoJunimosAppearAfterHarvest { get; set; }
 
         public ModConfig()
         {
             DoJunimosEatExcessCrops = true;
             DoJunimosHarvestFromPots = true;
+            DoJunimosAppearAfterHarvest = true;
         }
     }
 }
