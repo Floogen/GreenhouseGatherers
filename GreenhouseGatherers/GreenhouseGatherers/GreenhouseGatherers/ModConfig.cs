@@ -13,11 +13,15 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         public bool DoJunimosHarvestFromPots { get; set; }
         public bool DoJunimosAppearAfterHarvest { get; set; }
 
+        public int MaxAmountOfJunimosToAppearAfterHarvest { get; set; }
+
         public ModConfig()
         {
             DoJunimosEatExcessCrops = true;
             DoJunimosHarvestFromPots = true;
             DoJunimosAppearAfterHarvest = true;
+
+            MaxAmountOfJunimosToAppearAfterHarvest = -1;
         }
     }
 }
