@@ -71,7 +71,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 				maxJunimosToSpawn = harvestedTiles.Count / 2;
 			}
 
-			for (int x = 0; x < Game1.random.Next(1, System.Math.Min(harvestedTiles.Count / 2, maxJunimosToSpawn)); x++)
+			for (int x = 0; x < Game1.random.Next(harvestedTiles.Count / 4, System.Math.Min(harvestedTiles.Count, maxJunimosToSpawn)); x++)
             {
 				Vector2 tile = location.getRandomTile();
 
