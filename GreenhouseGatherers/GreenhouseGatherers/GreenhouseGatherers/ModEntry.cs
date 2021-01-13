@@ -9,6 +9,7 @@ using StardewValley;
 using System.Linq;
 using GreenhouseGatherers.GreenhouseGatherers.Objects;
 using GreenhouseGatherers.GreenhouseGatherers.Models;
+using StardewValley.Characters;
 
 namespace GreenhouseGatherers.GreenhouseGatherers
 {
@@ -56,6 +57,17 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void OnWarped(object sender, WarpedEventArgs e)
         {
+            if (e.OldLocation.numberOfObjectsWithName("Harvest Statue") > 0 && e.OldLocation.Name != "Community Center")
+            {
+                for (int i = e.OldLocation.characters.Count - 1; i >= 0; i--)
+                {
+                    if (e.OldLocation.characters[i] is Junimo)
+                    {
+                        e.OldLocation.characters.RemoveAt(i);
+                    }
+                }
+            }
+
             if (!config.DoJunimosAppearAfterHarvest || e.NewLocation.numberOfObjectsWithName("Harvest Statue") == 0)
             {
                 return;
@@ -69,7 +81,10 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             }
 
             // Harvest Statue hasn't spawned some Junimos yet, so spawn a few temp ones for fluff
-            statueObj.SpawnJunimos(e.NewLocation, config.MaxAmountOfJunimosToAppearAfterHarvest);
+            if (e.NewLocation.Name != "Community Center")
+            {
+                statueObj.SpawnJunimos(e.NewLocation, config.MaxAmountOfJunimosToAppearAfterHarvest);
+            }
         }
 
         public void harmonyPatch()
