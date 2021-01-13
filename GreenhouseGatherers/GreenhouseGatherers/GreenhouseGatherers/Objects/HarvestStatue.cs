@@ -74,7 +74,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
             {
 				Vector2 tile = location.getRandomTile();
 
-				if (location.isWaterTile((int)tile.X, (int)tile.Y) || !location.isTileLocationTotallyClearAndPlaceable(tile))
+				if (location.isWaterTile((int)tile.X, (int)tile.Y) || !location.isTileLocationTotallyClearAndPlaceable(tile) || !location.isTileOnMap(tile))
                 {
 					continue;
                 }
