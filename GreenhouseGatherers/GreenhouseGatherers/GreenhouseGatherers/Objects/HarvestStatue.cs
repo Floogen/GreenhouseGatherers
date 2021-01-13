@@ -12,7 +12,6 @@ using System.Xml.Serialization;
 
 namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 {
-	[XmlInclude(typeof(HarvestStatue))]
 	public class HarvestStatue : StardewValley.Objects.Chest
     {
 		private IMonitor monitor = ModResources.GetMonitor();
