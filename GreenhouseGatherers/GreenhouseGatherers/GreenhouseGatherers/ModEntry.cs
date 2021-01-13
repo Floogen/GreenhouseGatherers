@@ -145,6 +145,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
                 // Get the items from the HarvestStatue object
                 HarvestStatue statueObj = location.getObjectAtTile((int)statueData.Tile.X, (int)statueData.Tile.Y) as HarvestStatue;
+                if (statueObj is null)
+                {
+                    Monitor.Log($"Harvest Statue at ({statueData.Tile.X}, {statueData.Tile.Y}) was missing, unable to offload items!", LogLevel.Debug);
+                    continue;
+                }
 
                 // Add the items from HarvestStatue to temp Chest, so the player will still have their items if mod is uninstalled
                 Chest chest = new Chest(true, statueData.Tile);
@@ -177,6 +182,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
                 // Get the items from the temp Chest object
                 Chest chest = location.getObjectAtTile((int)statueData.Tile.X, (int)statueData.Tile.Y) as Chest;
+                if (chest is null)
+                {
+                    Monitor.Log($"Offloaded chest at ({statueData.Tile.X}, {statueData.Tile.Y}) was missing, unable to restore items!", LogLevel.Debug);
+                    continue;
+                }
 
                 // Add the items from the temp Chest to the HarvestStatue
                 HarvestStatue statueObj = new HarvestStatue(statueData.Tile, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.MinimumFruitOnTreeBeforeHarvest);
