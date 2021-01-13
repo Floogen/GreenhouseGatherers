@@ -108,6 +108,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void OnObjectListChanged(object sender, ObjectListChangedEventArgs e)
         {
+            if (saveData is null)
+            {
+                saveData = new SaveData();
+            }
+
             // Add any placed Harvest Statues to our cache
             foreach (var tileObjectPair in e.Added.Where(o => o.Value.ParentSheetIndex == harvestStatueID && !saveData.SavedStatueData.Any(s => s.GameLocation == e.Location.Name && s.Tile.Equals(o.Key))))
             {
