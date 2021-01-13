@@ -57,7 +57,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void OnWarped(object sender, WarpedEventArgs e)
         {
-            if (e.OldLocation.numberOfObjectsWithName("Harvest Statue") > 0 && e.OldLocation.Name != "Community Center")
+            if (e.OldLocation.numberOfObjectsWithName("Harvest Statue") > 0 && e.OldLocation.Name != "CommunityCenter")
             {
                 for (int i = e.OldLocation.characters.Count - 1; i >= 0; i--)
                 {
@@ -81,7 +81,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             }
 
             // Harvest Statue hasn't spawned some Junimos yet, so spawn a few temp ones for fluff
-            if (e.NewLocation.Name != "Community Center")
+            if (e.NewLocation.Name != "CommunityCenter")
             {
                 statueObj.SpawnJunimos(e.NewLocation, config.MaxAmountOfJunimosToAppearAfterHarvest);
             }
@@ -109,7 +109,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         private void OnObjectListChanged(object sender, ObjectListChangedEventArgs e)
         {
             // Add any placed Harvest Statues to our cache
-            foreach (var tileObjectPair in e.Added.Where(o => o.Value.ParentSheetIndex == harvestStatueID))
+            foreach (var tileObjectPair in e.Added.Where(o => o.Value.ParentSheetIndex == harvestStatueID && !saveData.SavedStatueData.Any(s => s.GameLocation == e.Location.Name && s.Tile.Equals(o.Key))))
             {
                 saveData.SavedStatueData.Add(new HarvestStatueData(e.Location.Name, tileObjectPair.Key));
             }
@@ -127,6 +127,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             harvestStatueID = ApiManager.GetHarvestStatueID();
         }
 
+        [EventPriority(EventPriority.High + 1)]
         private void OnSaving(object sender, SavingEventArgs e)
         {
             // Save the cache
@@ -159,13 +160,13 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             saveData = new SaveData();
             saveDataCachePath = $"data/{Constants.SaveFolderName}.json";
 
-            var saveDataCache = this.Helper.Data.ReadJsonFile<SaveData>(saveDataCachePath);
-            if (saveDataCache is null)
+            saveData = this.Helper.Data.ReadJsonFile<SaveData>(saveDataCachePath);
+            if (saveData is null)
             {
                 return;
             }
 
-            foreach (var statueData in saveDataCache.SavedStatueData)
+            foreach (var statueData in saveData.SavedStatueData)
             {
                 GameLocation location = Game1.getLocationFromName(statueData.GameLocation);
 
@@ -184,6 +185,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             }
         }
 
+        [EventPriority(EventPriority.Low)]
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
             if (!Game1.MasterPlayer.mailReceived.Contains("WizardHarvestStatueRecipe") && (config.ForceRecipeUnlock || Game1.MasterPlayer.mailReceived.Contains("hasPickedUpMagicInk")))
