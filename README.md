@@ -44,7 +44,7 @@ This mod creates a `config.json` under the `...\GreenhouseGatherers\GreenhouseGa
 |--|--|--|
 | `DoJunimosEatExcessCrops` | If `true`, the Junimos will eat the excess harvest if the local Harvest Statue is full. If set to `false` the Junimos will not harvest until the Harvest Statue has room. | `true` |
 | `DoJunimosHarvestFromPots` | If `true`, the Junimos will harvest from Garden Pots. | `true` |
-| `DoJunimosHarvestFromFruitTrees` | If `true`, the Junimos will harvest from Fruit Trees. | `false` |
+| `DoJunimosHarvestFromFruitTrees` | If `true`, the Junimos will harvest from Fruit Trees. | `true` |
 | `MinimumFruitOnTreeBeforeHarvest` | The minimum amount of fruit on a tree to appear before the Junimos harvest from it. | `3` |
 | `DoJunimosAppearAfterHarvest` | If `true`, the Junimos will appear in the building they harvest from. They will disappear if approached. | `true` |
 | `MaxAmountOfJunimosToAppearAfterHarvest` | The maximum amount of Junimos to appear after a harvest. If set to `-1`, the amount will scale on the amount of crops harvested. | `-1` |
