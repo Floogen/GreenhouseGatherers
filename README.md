@@ -9,7 +9,7 @@ Once placed inside, the Junimos will appear each morning and immediately harvest
 ## Install
 1. [Install the latest version of SMAPI](https://smapi.io/).
 2. [Install all the dependencies](#dependencies).
-3. Install [this mod from Nexus mods](http://www.nexusmods.com/stardewvalley/mods/????).
+3. Install [this mod from Nexus mods](http://www.nexusmods.com/stardewvalley/mods/7619).
 4. Run the game using SMAPI.
 
 ## Unlocking the Harvest Statue
