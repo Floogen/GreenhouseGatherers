@@ -6,7 +6,7 @@
   "UniqueID": "PeacefulEnd.GreenhouseGatherers",
   "EntryDll": "GreenhouseGatherers.dll",
   "MinimumApiVersion": "3.0.0",
-  "UpdateKeys": [ "Nexus:????" ],
+  "UpdateKeys": [ "Nexus:7619" ],
   "Dependencies": [
    {
       "UniqueID": "spacechase0.JsonAssets",
