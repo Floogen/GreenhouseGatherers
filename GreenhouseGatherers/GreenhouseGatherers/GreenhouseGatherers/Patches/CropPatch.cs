@@ -25,6 +25,25 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 
         internal static bool Prefix(Crop __instance, Vector2 ___tilePosition, int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester = null)
         {
+			Object cropObj = new Object(__instance.indexOfHarvest, 1);
+			string cropName = "Unknown";
+			if (cropObj != null)
+			{
+				cropName = cropObj.DisplayName;
+			}
+
+			if (soil is null)
+            {
+
+				monitor.Log($"Crop ({cropName}) at {xTile}, {yTile} is missing HoeDirt, unable to process!", LogLevel.Trace);
+				return true;
+            }
+			if (soil.currentLocation is null)
+            {
+				monitor.Log($"Crop ({cropName}) at {xTile}, {yTile} is missing currentLocation (bad GameLocation?), unable to process!", LogLevel.Trace);
+				return true;
+			}
+
             if (soil.currentLocation.numberOfObjectsWithName("Harvest Statue") == 0)
             {
                 return true;
