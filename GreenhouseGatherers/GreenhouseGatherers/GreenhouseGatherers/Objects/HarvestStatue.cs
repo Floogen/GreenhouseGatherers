@@ -94,10 +94,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
 		public void HarvestCrops(GameLocation location)
         {
+			string locationName = ModResources.SplitCamelCaseText(location.Name);
 			// Check if we're at capacity and that Junimos aren't allowed to eat excess crops
 			if (this.items.Count >= this.GetActualCapacity() && !doJunimosEatExcessCrops)
             {
-				Game1.showRedMessage($"The Junimos at the {location.Name} couldn't harvest due to lack of storage!");
+				Game1.showRedMessage($"The Junimos at the {locationName} couldn't harvest due to lack of storage!");
 			}
 
 			// Look and harvest for crops & forage products on the ground
@@ -120,14 +121,14 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			// Check if the Junimos ate the crops due to no inventory space
 			if (ateCrops)
 			{
-				Game1.showRedMessage($"The Junimos at the {location.Name} ate harvested crops due to lack of storage!");
+				Game1.showRedMessage($"The Junimos at the {locationName} ate harvested crops due to lack of storage!");
 				return;
 			}
 			
 			if (harvestedToday && enableHarvestMessage)
             {
 				// Let the player know we harvested
-				Game1.addHUDMessage(new HUDMessage($"The Junimos at the {location.Name} have harvested crops.", 2));
+				Game1.addHUDMessage(new HUDMessage($"The Junimos at the {locationName} have harvested crops.", 2));
 				return;
 			}
 		}
