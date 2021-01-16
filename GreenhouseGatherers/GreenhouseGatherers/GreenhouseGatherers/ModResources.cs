@@ -1,9 +1,5 @@
 ﻿using StardewModdingAPI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace GreenhouseGatherers
 {
@@ -19,6 +15,11 @@ namespace GreenhouseGatherers
 		public static IMonitor GetMonitor()
 		{
 			return monitor;
+		}
+
+		public static string SplitCamelCaseText(string input)
+        {
+			return string.Join(" ", Regex.Split(input, @"(?<!^)(?=[A-Z](?![A-Z]|$))"));
 		}
 	}
 }
