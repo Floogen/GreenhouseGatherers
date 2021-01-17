@@ -36,6 +36,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             catch (Exception e)
             {
                 Monitor.Log($"Issue with Harmony patch: {e}", LogLevel.Error);
+                return;
             }
 
             // Load the config
