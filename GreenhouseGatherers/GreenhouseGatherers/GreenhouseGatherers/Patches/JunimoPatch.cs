@@ -11,14 +11,17 @@ using Netcode;
 
 namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 {
-    [HarmonyPatch(typeof(Junimo))]
-    [HarmonyPatch(MethodType.Constructor)]
-    [HarmonyPatch(new System.Type[] { typeof(Vector2), typeof(int), typeof(bool) })]
-    public class JunimoPatch
+	[HarmonyPatch]
+	public class JunimoPatch
     {
         private static IMonitor monitor = ModResources.GetMonitor();
 
-        internal static void Postfix(ref NetColor ___color)
+		internal static ConstructorInfo TargetMethod()
+		{
+			return AccessTools.Constructor(typeof(Junimo), new System.Type[] { typeof(Vector2), typeof(int), typeof(bool) });
+		}
+
+		internal static void Postfix(ref NetColor ___color)
         {
             if (Game1.currentLocation.numberOfObjectsWithName("Harvest Statue") == 0 || Game1.currentLocation.Name == "CommunityCenter")
             {
