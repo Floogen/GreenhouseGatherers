@@ -210,6 +210,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 // Gather any crops nearby
                 statueObj.HarvestCrops(location);
             }
+
+            // Purge the cache of any invalid locations (duplicated or non-existing)
+            saveData.SavedStatueData = saveData.SavedStatueData.Where(s => Game1.getLocationFromName(s.GameLocation) != null).GroupBy(s => s.GameLocation).Select(s => s.First()).ToList();
         }
 
         [EventPriority(EventPriority.Low)]
