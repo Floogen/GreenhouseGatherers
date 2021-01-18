@@ -58,7 +58,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void OnWarped(object sender, WarpedEventArgs e)
         {
-            if (e.OldLocation.numberOfObjectsWithName("Harvest Statue") > 0 && e.OldLocation.Name != "CommunityCenter")
+            if (e.OldLocation.numberOfObjectsWithName("Harvest Statue") > 0 && e.OldLocation.NameOrUniqueName != "CommunityCenter")
             {
                 for (int i = e.OldLocation.characters.Count - 1; i >= 0; i--)
                 {
@@ -76,13 +76,19 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
             // Location contains a Harvest Statue, see if we need to spawn Junimos
             HarvestStatue statueObj = e.NewLocation.objects.Pairs.First(p => p.Value.Name == "Harvest Statue").Value as HarvestStatue;
+            if (statueObj is null)
+            {
+                Monitor.Log("Incorrectly attempted to perform Junimo spawning in a location without Harvest Statue!", LogLevel.Trace);
+                return;
+            }
+
             if (statueObj.hasSpawnedJunimos)
             {
                 return;
             }
 
             // Harvest Statue hasn't spawned some Junimos yet, so spawn a few temp ones for fluff
-            if (e.NewLocation.Name != "CommunityCenter")
+            if (e.NewLocation.NameOrUniqueName != "CommunityCenter")
             {
                 statueObj.SpawnJunimos(e.NewLocation, config.MaxAmountOfJunimosToAppearAfterHarvest);
             }
@@ -115,15 +121,15 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             }
 
             // Add any placed Harvest Statues to our cache
-            foreach (var tileObjectPair in e.Added.Where(o => o.Value.ParentSheetIndex == harvestStatueID && !saveData.SavedStatueData.Any(s => s.GameLocation == e.Location.Name && s.Tile.Equals(o.Key))))
+            foreach (var tileObjectPair in e.Added.Where(o => o.Value.ParentSheetIndex == harvestStatueID && !saveData.SavedStatueData.Any(s => s.GameLocation == e.Location.NameOrUniqueName && s.Tile.Equals(o.Key))))
             {
-                saveData.SavedStatueData.Add(new HarvestStatueData(e.Location.Name, tileObjectPair.Key));
+                saveData.SavedStatueData.Add(new HarvestStatueData(e.Location.NameOrUniqueName, tileObjectPair.Key));
             }
 
             // Remove any destroyed Harvest Statues from our cache
             foreach (var tileObjectPair in e.Removed.Where(o => o.Value.ParentSheetIndex == harvestStatueID))
             {
-                saveData.SavedStatueData = saveData.SavedStatueData.Where(s => !(s.GameLocation == e.Location.Name && s.Tile.Equals(tileObjectPair.Key))).ToList();
+                saveData.SavedStatueData = saveData.SavedStatueData.Where(s => !(s.GameLocation == e.Location.NameOrUniqueName && s.Tile.Equals(tileObjectPair.Key))).ToList();
             }
         }
 
@@ -180,6 +186,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             foreach (var statueData in saveData.SavedStatueData)
             {
                 GameLocation location = Game1.getLocationFromName(statueData.GameLocation);
+                if (location is null)
+                {
+                    Monitor.Log($"Bad location name of {statueData.GameLocation} with coordinates at ({statueData.Tile.X}, {statueData.Tile.Y}), unable to restore items!", LogLevel.Alert);
+                    continue;
+                }
 
                 // Get the items from the temp Chest object
                 Chest chest = location.getObjectAtTile((int)statueData.Tile.X, (int)statueData.Tile.Y) as Chest;
