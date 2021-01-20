@@ -35,6 +35,11 @@ Right clicking the Harvest Statue will open up a chest-like inventory, allowing 
 
 Note that if the Harvest Statue gets full, the Junimos will eat any excess products they gather! This can disabled within the config if you so wish.
 
+## Replanting
+While harvesting the Junimos will replant any non-renewing crops, so long as the Harvest Statue contains the matching seeds.
+
+e.g. If the Junimos harvest a parsnip, they will look inside the Harvest Statue for a parsnip seed. If there is at least one, they will use it to replant the harvested parsnip.
+
 
 ## Configurations
 This mod creates a `config.json` under the `...\GreenhouseGatherers\GreenhouseGatherers` folder. It contains options that you can modify to change how **Greenhouse Gatherers** interacts with the game.
