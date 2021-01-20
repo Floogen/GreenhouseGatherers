@@ -48,6 +48,7 @@ This mod creates a `config.json` under the `...\GreenhouseGatherers\GreenhouseGa
 | `MinimumFruitOnTreeBeforeHarvest` | The minimum amount of fruit on a tree to appear before the Junimos harvest from it. | `3` |
 | `DoJunimosAppearAfterHarvest` | If `true`, the Junimos will appear in the building they harvest from. They will disappear if approached. | `true` |
 | `MaxAmountOfJunimosToAppearAfterHarvest` | The maximum amount of Junimos to appear after a harvest. If set to `-1`, the amount will scale on the amount of crops harvested. | `-1` |
+| `DoJunimosSowSeedsAfterHarvest` | If `true`, the Junimos will replant the seeds of the harvested crop. The seeds must be stored in the Harvest Statue for Junimos to replant them. | `true` |
 | `EnableHarvestMessage` | If `true`, you will get a message in the morning for every Harvest Statue that successfully harvested that day. | `true` |
 | `ForceRecipeUnlock`| If `true`, the recipe for the Harvest Statue will arrive by mail the next day. | `false` |
 
