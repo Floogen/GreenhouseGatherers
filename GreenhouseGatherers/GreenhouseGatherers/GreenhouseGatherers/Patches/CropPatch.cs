@@ -49,6 +49,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
                 return true;
             }
 
+			// If any farmer is in a location with a Harvest Statue and the farmer is not in bed, skip logic
+			if (soil.currentLocation.farmers.Any(f => !f.isInBed))
+            {
+				return true;
+			}
+
             // Get the nearby HarvestStatue, which will be placing the harvested crop into
             HarvestStatue statueObj = soil.currentLocation.objects.Pairs.First(p => p.Value.Name == "Harvest Statue").Value as HarvestStatue;
 
