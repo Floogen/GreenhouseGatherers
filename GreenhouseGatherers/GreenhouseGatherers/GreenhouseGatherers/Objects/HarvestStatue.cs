@@ -26,6 +26,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 		private bool doJunimosEatExcessCrops = true;
 		private bool doJunimosHarvestFromPots = true;
 		private bool doJunimosHarvestFromFruitTrees = true;
+		private bool doJunimosSowSeedsAfterHarvest = true;
 		private int minimumFruitOnTreeBeforeHarvest = 3;
 
 		protected override void initNetFields()
@@ -43,13 +44,14 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
 		}
 
-		public HarvestStatue(Vector2 position, int itemID, bool enableHarvestMessage = true, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, itemID)
+		public HarvestStatue(Vector2 position, int itemID, bool enableHarvestMessage = true, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, bool doJunimosSowSeedsAfterHarvest = false, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, itemID)
 		{
 			this.Name = "Harvest Statue";
 			this.enableHarvestMessage = enableHarvestMessage;
 			this.doJunimosEatExcessCrops = doJunimosEatExcessCrops;
 			this.doJunimosHarvestFromPots = doJunimosHarvestFromPots;
 			this.doJunimosHarvestFromFruitTrees = doJunimosHarvestFromFruitTrees;
+			this.doJunimosSowSeedsAfterHarvest = doJunimosSowSeedsAfterHarvest;
 			this.minimumFruitOnTreeBeforeHarvest = minimumFruitOnTreeBeforeHarvest;
 
 			base.type.Value = "Crafting";
@@ -181,7 +183,10 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 					hoeDirt.crop = null;
 
 					// Attempt to replant, if it is enabled and has valid seed
-					AttemptSowSeed(seedIndex, hoeDirt, tile);
+					if (doJunimosSowSeedsAfterHarvest)
+                    {
+						AttemptSowSeed(seedIndex, hoeDirt, tile);
+					}
 				}
 			}
 
@@ -231,7 +236,10 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 						hoeDirt.crop = null;
 
 						// Attempt to replant, if it is enabled and has valid seed
-						AttemptSowSeed(seedIndex, hoeDirt, tile);
+						if (doJunimosSowSeedsAfterHarvest)
+						{
+							AttemptSowSeed(seedIndex, hoeDirt, tile);
+						}
 					}
 				}
 			}
