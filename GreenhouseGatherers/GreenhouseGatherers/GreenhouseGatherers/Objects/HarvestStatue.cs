@@ -345,7 +345,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
         public override void ShowMenu()
         {
 			// Set source to 0 so recolor doesn't show up
-			Game1.activeClickableMenu = new ItemGrabMenu(this.GetItemsForPlayer(Game1.player.UniqueMultiplayerID), reverseGrab: false, showReceivingMenu: true, InventoryMenu.highlightAllItems, grabItemFromInventory, null, grabItemFromChest, snapToBottom: false, canBeExitedWithKey: true, playRightClickSound: true, allowRightClick: true, showOrganizeButton: true, 0, this.fridge ? null : this, -1, this);
+			Game1.activeClickableMenu = new ItemGrabMenu(this.GetItemsForPlayer(Game1.player.UniqueMultiplayerID), reverseGrab: false, showReceivingMenu: true, InventoryMenu.highlightAllItems, grabItemFromInventory, null, grabItemFromChest, snapToBottom: false, canBeExitedWithKey: true, playRightClickSound: true, allowRightClick: true, showOrganizeButton: true, 0, null, -1, this);
 		}
 
         public override bool placementAction(GameLocation location, int x, int y, Farmer who = null)
