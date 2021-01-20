@@ -116,6 +116,6 @@ xcopy /s /y /i "$(TargetDir)" "$(GameModsPath)\$(ProjectName)"
 
 powershell Remove-Item -Path '$(SolutionDir)releases\latest\*' -Recurse -Force
 xcopy /s /y /i "$(TargetDir)" "$(SolutionDir)releases\latest\$(ProjectName)"
-powershell Compress-Archive -Path '$(SolutionDir)releases\latest\*' -DestinationPath '$(SolutionDir)releases\$(ProjectName)-@(VersionNumber).zip' -Force</PostBuildEvent>
+7z a -tzip "$(SolutionDir)releases\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)releases\latest\GreenhouseGatherers"</PostBuildEvent>
   </PropertyGroup>
 </Project>
