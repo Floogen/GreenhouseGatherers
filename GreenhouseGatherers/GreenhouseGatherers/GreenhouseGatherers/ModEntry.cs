@@ -165,6 +165,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                     chest.addItem(item);
                 }
 
+                // Set the tempChest.modData to statueObj.modData in case the Chests Anywhere mod is used (so we can retain name / category data)
+                if (statueObj != null)
+                {
+                    chest.modData = statueObj.modData;
+                }
+
                 // Remove the HarvestStatue by placing the Chest
                 location.setObject(statueData.Tile, chest);
             }
@@ -203,6 +209,13 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 // Add the items from the temp Chest to the HarvestStatue
                 HarvestStatue statueObj = new HarvestStatue(statueData.Tile, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.MinimumFruitOnTreeBeforeHarvest);
                 statueObj.AddItems(chest.items);
+
+                // Set the statueObj.modData to tempChest.modData in case the Chests Anywhere mod is used (so we can retain name / category data)
+                Chest tempChest = location.getObjectAtTile((int)statueData.Tile.X, (int)statueData.Tile.Y) as Chest;
+                if (tempChest != null)
+                {
+                    statueObj.modData = tempChest.modData;
+                }
 
                 // Remove the temp Chest by placing HarvestStatue
                 location.setObject(statueData.Tile, statueObj);
