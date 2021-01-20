@@ -133,6 +133,25 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			}
 		}
 
+		private void AttemptSowSeed(int seedIndex, HoeDirt hoeDirt, Vector2 tile)
+        {
+			// -74 == Object.SeedsCategory
+			Item seedItem = this.items.FirstOrDefault(i => i != null && i.Category == -74 && i.ParentSheetIndex == seedIndex);
+			if (seedItem != null)
+			{
+				// Remove one seed from the stack, or the whole item if it is the last seed of the stack
+				seedItem.Stack -= 1;
+
+				if (seedItem.Stack == 0)
+				{
+					this.items.Remove(seedItem);
+				}
+
+				// Plant the seed on the ground
+				hoeDirt.crop = new Crop(seedIndex, (int)tile.X, (int)tile.Y);
+			}
+		}
+
         private void SearchForGroundCrops(GameLocation location)
         {
 			// Search for crops
@@ -158,7 +177,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 				// Clear any non-renewing crop
 				if (crop.regrowAfterHarvest == -1)
 				{
+					int seedIndex = crop.netSeedIndex;
 					hoeDirt.crop = null;
+
+					// Attempt to replant, if it is enabled and has valid seed
+					AttemptSowSeed(seedIndex, hoeDirt, tile);
 				}
 			}
 
@@ -204,7 +227,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 					// Clear any non-renewing crop
 					if (hoeDirt.crop.regrowAfterHarvest == -1)
 					{
+						int seedIndex = hoeDirt.crop.netSeedIndex;
 						hoeDirt.crop = null;
+
+						// Attempt to replant, if it is enabled and has valid seed
+						AttemptSowSeed(seedIndex, hoeDirt, tile);
 					}
 				}
 			}
