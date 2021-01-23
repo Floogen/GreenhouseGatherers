@@ -23,7 +23,8 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
             return AccessTools.Method(typeof(StardewValley.Crop), nameof(StardewValley.Crop.harvest));
         }
 
-        internal static bool Prefix(Crop __instance, Vector2 ___tilePosition, int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester = null)
+		[HarmonyPriority(Priority.Low)]
+		internal static bool Prefix(Crop __instance, Vector2 ___tilePosition, int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester = null)
         {
 			Object cropObj = new Object(__instance.indexOfHarvest, 1);
 			string cropName = "Unknown";
@@ -34,7 +35,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 
 			if (soil is null)
             {
-
 				monitor.Log($"Crop ({cropName}) at {xTile}, {yTile} is missing HoeDirt, unable to process!", LogLevel.Trace);
 				return true;
             }
@@ -122,6 +122,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 						fertilizerQualityLevel = 3;
 						break;
 				}
+
 				double chanceForGoldQuality = 0.2 * ((double)Game1.player.FarmingLevel / 10.0) + 0.2 * (double)fertilizerQualityLevel * (((double)Game1.player.FarmingLevel + 2.0) / 12.0) + 0.01;
 				double chanceForSilverQuality = System.Math.Min(0.75, chanceForGoldQuality * 2.0);
 				if (fertilizerQualityLevel >= 3 && r.NextDouble() < chanceForGoldQuality / 2.0)
@@ -156,6 +157,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 				{
 					cropQuality = 0;
 				}
+
 				Object harvestedItem = (__instance.programColored ? new ColoredObject(__instance.indexOfHarvest, 1, __instance.tintColor)
 				{
 					Quality = cropQuality
