@@ -15,10 +15,13 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 {
     public class ModEntry : Mod
     {
-        // Save related
+        // Legacy save related
         private SaveData saveData;
-        private int harvestStatueID;
         private string saveDataCachePath;
+
+        // Save related
+        private int harvestStatueID;
+        private string harvestStatueDataFlag;
 
         // Config related
         private ModConfig config;
@@ -39,14 +42,14 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 return;
             }
 
+            // Set the modData flag we'll be using
+            harvestStatueDataFlag = $"{this.ModManifest.UniqueID}/is-harvest-statue";
+
             // Load the config
             this.config = helper.ReadConfig<ModConfig>();
 
             // Hook into the game launch
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
-
-            // Hook into ObjectListChanged event so we can catch when Harvest Statues are placed / removed
-            helper.Events.World.ObjectListChanged += this.OnObjectListChanged;
 
             // Hook into Player.Warped event so we can spawn some Junimos if the area was recently harvested
             helper.Events.Player.Warped += this.OnWarped;
@@ -113,26 +116,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             ApiManager.GetJsonAssetInterface().IdsAssigned += OnIdsAssigned;
         }
 
-        private void OnObjectListChanged(object sender, ObjectListChangedEventArgs e)
-        {
-            if (saveData is null)
-            {
-                saveData = new SaveData();
-            }
-
-            // Add any placed Harvest Statues to our cache
-            foreach (var tileObjectPair in e.Added.Where(o => o.Value.ParentSheetIndex == harvestStatueID && !saveData.SavedStatueData.Any(s => s.GameLocation == e.Location.NameOrUniqueName && s.Tile.Equals(o.Key))))
-            {
-                saveData.SavedStatueData.Add(new HarvestStatueData(e.Location.NameOrUniqueName, tileObjectPair.Key));
-            }
-
-            // Remove any destroyed Harvest Statues from our cache
-            foreach (var tileObjectPair in e.Removed.Where(o => o.Value.ParentSheetIndex == harvestStatueID))
-            {
-                saveData.SavedStatueData = saveData.SavedStatueData.Where(s => !(s.GameLocation == e.Location.NameOrUniqueName && s.Tile.Equals(tileObjectPair.Key))).ToList();
-            }
-        }
-
         private void OnIdsAssigned(object sender, EventArgs e)
         {
             // Get the Harvest Statue item ID
@@ -142,51 +125,58 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         [EventPriority(EventPriority.High + 1)]
         private void OnSaving(object sender, SavingEventArgs e)
         {
-            // Save the cache
-            this.Helper.Data.WriteJsonFile(saveDataCachePath, saveData);
-
-            // Find all the HarvestStatue objects and convert them to a chest
-            foreach (HarvestStatueData statueData in saveData.SavedStatueData)
+            // Find all Harvest Statues
+            Monitor.Log("Saving...", LogLevel.Trace);
+            foreach (GameLocation location in Game1.locations)
             {
-                GameLocation location = Game1.getLocationFromName(statueData.GameLocation);
-
-                // Get the items from the HarvestStatue object
-                HarvestStatue statueObj = location.getObjectAtTile((int)statueData.Tile.X, (int)statueData.Tile.Y) as HarvestStatue;
-                if (statueObj is null)
+                foreach (HarvestStatue harvestStatue in location.Objects.Pairs.Where(p => p.Value is HarvestStatue).Select(p => p.Value))
                 {
-                    Monitor.Log($"Harvest Statue at ({statueData.Tile.X}, {statueData.Tile.Y}) was missing, unable to offload items!", LogLevel.Debug);
-                    continue;
-                }
+                    // Add the items from HarvestStatue to temp Chest, so the player will still have their items if mod is uninstalled
+                    Chest chest = new Chest(true, harvestStatue.TileLocation);
+                    foreach (var item in harvestStatue.items)
+                    {
+                        chest.addItem(item);
+                    }
 
-                // Add the items from HarvestStatue to temp Chest, so the player will still have their items if mod is uninstalled
-                Chest chest = new Chest(true, statueData.Tile);
-                foreach (var item in statueObj.items)
-                {
-                    chest.addItem(item);
-                }
+                    // Retain any previous modData in case the Chests Anywhere mod is used (so we can retain name / category data)
+                    foreach (var pair in harvestStatue.modData.Pairs)
+                    {
+                        chest.modData.Add(pair.Key, pair.Value);
+                    }
 
-                // Set the tempChest.modData to statueObj.modData in case the Chests Anywhere mod is used (so we can retain name / category data)
-                if (statueObj != null)
-                {
-                    chest.modData = statueObj.modData;
-                }
+                    // If missing, add the modData harvestStatueDataFlag == "true"
+                    if (!chest.modData.ContainsKey(harvestStatueDataFlag))
+                    {
+                        chest.modData.Add(harvestStatueDataFlag, "true");
+                    }
+                    else if (chest.modData[harvestStatueDataFlag] != "true")
+                    {
+                        chest.modData[harvestStatueDataFlag] = "true";
+                    }
 
-                // Remove the HarvestStatue by placing the Chest
-                location.setObject(statueData.Tile, chest);
+                    // Remove the HarvestStatue by placing the Chest
+                    location.setObject(harvestStatue.TileLocation, chest);
+                }
             }
-            return;
+
+            if (saveData != null && saveData.SavedStatueData.Count > 0)
+            {
+                // Legacy cached save data was use, purge the old cache file so the new logic may be used on the next day
+                this.Helper.Data.WriteJsonFile(saveDataCachePath, new SaveData());
+            }
         }
 
-        private void LoadHarvestStatuesFromCache()
+        private bool DidPerformLegacyLoadHarvestStatuesFromCache()
         {
             // See if there is an old cache we need to read, otherwise load in a new cache
             saveData = new SaveData();
             saveDataCachePath = $"data/{Constants.SaveFolderName}.json";
 
             saveData = this.Helper.Data.ReadJsonFile<SaveData>(saveDataCachePath);
-            if (saveData is null)
+
+            if (saveData is null || saveData.SavedStatueData.Count == 0)
             {
-                return;
+                return false;
             }
 
             foreach (var statueData in saveData.SavedStatueData)
@@ -207,7 +197,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 }
 
                 // Add the items from the temp Chest to the HarvestStatue
-                HarvestStatue statueObj = new HarvestStatue(statueData.Tile, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.DoJunimosSowSeedsAfterHarvest,config.MinimumFruitOnTreeBeforeHarvest);
+                HarvestStatue statueObj = new HarvestStatue(statueData.Tile, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.DoJunimosSowSeedsAfterHarvest, config.MinimumFruitOnTreeBeforeHarvest);
                 statueObj.AddItems(chest.items);
 
                 // Set the statueObj.modData to tempChest.modData in case the Chests Anywhere mod is used (so we can retain name / category data)
@@ -226,6 +216,46 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
             // Purge the cache of any invalid locations (duplicated or non-existing)
             saveData.SavedStatueData = saveData.SavedStatueData.Where(s => Game1.getLocationFromName(s.GameLocation) != null).GroupBy(s => s.GameLocation).Select(s => s.First()).ToList();
+
+            return true;
+        }
+
+        private void LoadHarvestStatuesFromCache()
+        {
+            // Perform the legacy save data if needed (will run if the user has a cache file from older versions of mod)
+            if (DidPerformLegacyLoadHarvestStatuesFromCache())
+            {
+                return;
+            }
+
+            // Find all chests with the "is-harvest-statue" == "true"
+            Monitor.Log("Loading...", LogLevel.Trace);
+            foreach (GameLocation location in Game1.locations)
+            {
+                foreach (Chest chest in location.Objects.Pairs.Where(p => p.Value is Chest).Select(p => p.Value))
+                {
+                    if (chest is HarvestStatue || !chest.modData.ContainsKey(harvestStatueDataFlag) || chest.modData[harvestStatueDataFlag] != "true")
+                    {
+                        continue;
+                    }
+
+                    // Add the items from the temp Chest to the HarvestStatue
+                    HarvestStatue statueObj = new HarvestStatue(chest.TileLocation, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.DoJunimosSowSeedsAfterHarvest, config.MinimumFruitOnTreeBeforeHarvest);
+                    statueObj.AddItems(chest.items);
+
+                    // Move the modData over in case the Chests Anywhere mod is used (so we can retain name / category data)
+                    foreach (var pair in chest.modData.Pairs)
+                    {
+                        statueObj.modData.Add(pair.Key, pair.Value);
+                    }
+
+                    // Remove the temp Chest by placing HarvestStatue
+                    location.setObject(chest.TileLocation, statueObj);
+
+                    // Gather any crops nearby
+                    statueObj.HarvestCrops(location);
+                }
+            }
         }
 
         [EventPriority(EventPriority.Low)]
