@@ -110,10 +110,10 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             {
                 Monitor.Log("Attempting to hook into spacechase0.JsonAssets.", LogLevel.Debug);
                 ApiManager.HookIntoJsonAssets(Helper);
-            }
 
-            // Hook into Json Asset's IdsAssigned event
-            ApiManager.GetJsonAssetInterface().IdsAssigned += OnIdsAssigned;
+                // Hook into Json Asset's IdsAssigned event
+                ApiManager.GetJsonAssetInterface().IdsAssigned += OnIdsAssigned;
+            }
         }
 
         private void OnIdsAssigned(object sender, EventArgs e)
@@ -144,7 +144,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                         chest.modData.Add(pair.Key, pair.Value);
                     }
 
-                    // If missing, add the modData harvestStatueDataFlag == "true"
+                    // If missing, add to the modData: harvestStatueDataFlag == "true"
                     if (!chest.modData.ContainsKey(harvestStatueDataFlag))
                     {
                         chest.modData.Add(harvestStatueDataFlag, "true");
