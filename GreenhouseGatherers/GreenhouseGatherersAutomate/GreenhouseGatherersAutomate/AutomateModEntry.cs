@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection;
 using GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate;
+using Harmony;
 using Microsoft.Xna.Framework;
 using Pathoschild.Stardew.Automate;
 using StardewModdingAPI;
@@ -10,12 +12,33 @@ using StardewValley;
 namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate
 {
     /// <summary>The mod entry point.</summary>
-    public class AutomatedModEntry : Mod
+    public class AutomateModEntry : Mod
     {
         public override void Entry(IModHelper helper)
         {
+            // Load the monitor
+            AutomateModResources.LoadMonitor(this.Monitor);
+
+            // Load our Harmony patches
+            Monitor.Log("This mod patches Automate. If you notice issues with Automate, make sure it happens without this mod before reporting it to the Automate page.", LogLevel.Trace);
+            try
+            {
+                harmonyPatch();
+            }
+            catch (Exception e)
+            {
+                Monitor.Log($"There was a problem patching via Harmony; Harvest Statues will not output harvested products. See log for details.", LogLevel.Error);
+                Monitor.Log($"An exception occured while trying to patch Pathoschild.Automate for Harvest Statues: {e}", LogLevel.Trace);
+                return;
+            }
+
             // Hook into the game launch
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+        }
+        private void harmonyPatch()
+        {
+            var harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
