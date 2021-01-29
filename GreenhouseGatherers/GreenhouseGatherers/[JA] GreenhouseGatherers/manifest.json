@@ -4,7 +4,6 @@
 	"Description": "Adds craftable Junimo Harvest Statues.",
 	"Version": "REPLACE_ME_WITH_VERSION",
 	"UniqueID": "PeacefulEnd.GreenhouseGatherers.JA",
-	"UpdateKeys": [],
 	"ContentPackFor": {
     	"UniqueID": "spacechase0.JsonAssets"
 	},

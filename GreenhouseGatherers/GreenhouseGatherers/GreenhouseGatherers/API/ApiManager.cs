@@ -1,24 +1,17 @@
 ﻿using GreenhouseGatherers.GreenhouseGatherers.API.Interfaces;
 using StardewModdingAPI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GreenhouseGatherers.GreenhouseGatherers.API
 {
     public static class ApiManager
     {
-        private static string modID;
-        private static IJsonAssetApi jsonAssetApi;
         private static IMonitor monitor = ModResources.GetMonitor();
+
+        private static IJsonAssetApi jsonAssetApi;
+
 
         public static void HookIntoJsonAssets(IModHelper helper)
         {
-            // Get modID
-            modID = helper.ModRegistry.ModID;
-
             // Attempt to hook into the IMobileApi interface
             jsonAssetApi = helper.ModRegistry.GetApi<IJsonAssetApi>("spacechase0.JsonAssets");
 
