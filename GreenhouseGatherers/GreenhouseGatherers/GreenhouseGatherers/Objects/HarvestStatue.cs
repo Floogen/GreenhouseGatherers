@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Netcode;
 using StardewModdingAPI;
 using StardewValley;
@@ -6,6 +7,7 @@ using StardewValley.Characters;
 using StardewValley.Menus;
 using StardewValley.Objects;
 using StardewValley.TerrainFeatures;
+using StardewValley.Tools;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -29,6 +31,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 		private bool doJunimosSowSeedsAfterHarvest = true;
 		private int minimumFruitOnTreeBeforeHarvest = 3;
 
+		// Graphic related
+		private int currentSheetIndex;
+
 		protected override void initNetFields()
 		{
 			base.initNetFields();
@@ -39,12 +44,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			return 1;
 		}
 
-		public HarvestStatue()
-		{
-
-		}
-
-		public HarvestStatue(Vector2 position, int itemID, bool enableHarvestMessage = true, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, bool doJunimosSowSeedsAfterHarvest = false, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, itemID)
+		public HarvestStatue(Vector2 position, int itemID, bool enableHarvestMessage = true, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, bool doJunimosSowSeedsAfterHarvest = false, int minimumFruitOnTreeBeforeHarvest = 3) : base(false, position, itemID)
 		{
 			this.Name = "Harvest Statue";
 			this.enableHarvestMessage = enableHarvestMessage;
@@ -54,8 +54,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			this.doJunimosSowSeedsAfterHarvest = doJunimosSowSeedsAfterHarvest;
 			this.minimumFruitOnTreeBeforeHarvest = minimumFruitOnTreeBeforeHarvest;
 
+			this.currentSheetIndex = itemID;
+
 			base.type.Value = "Crafting";
-			base.startingLidFrame.Value = itemID;
 			base.bigCraftable.Value = true;
 			base.canBeSetDown.Value = true;
 		}
@@ -334,11 +335,11 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
         {
 			if (!this.items.Any())
 			{
-				base.startingLidFrame.Value = this.ParentSheetIndex;
+				this.currentSheetIndex = this.ParentSheetIndex;
 			}
 			else
             {
-				base.startingLidFrame.Value = this.ParentSheetIndex + 1;
+				this.currentSheetIndex = this.ParentSheetIndex + 1;
 			}
 		}
 
@@ -369,6 +370,81 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			});
 
 			return true;
+		}
+
+		public override bool performToolAction(Tool t, GameLocation location)
+		{
+			if (t != null && t.getLastFarmerToUse() != null && t.getLastFarmerToUse() != Game1.player)
+			{
+				return false;
+			}
+
+			if (t == null)
+			{
+				return false;
+			}
+
+			if (t is MeleeWeapon || !t.isHeavyHitter())
+			{
+				return false;
+			}
+
+			Farmer player = t.getLastFarmerToUse();
+			if (player != null)
+			{
+				Vector2 c = base.TileLocation;
+				if (c.X == 0f && c.Y == 0f)
+				{
+					bool found = false;
+					foreach (KeyValuePair<Vector2, StardewValley.Object> pair in location.objects.Pairs)
+					{
+						if (pair.Value == this)
+						{
+							c.X = (int)pair.Key.X;
+							c.Y = (int)pair.Key.Y;
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+					{
+						c = player.GetToolLocation() / 64f;
+						c.X = (int)c.X;
+						c.Y = (int)c.Y;
+					}
+				}
+				this.GetMutex().RequestLock(delegate
+				{
+					this.clearNulls();
+					monitor.Log(this.items.Count.ToString(), LogLevel.Debug);
+					if (this.isEmpty())
+					{
+						this.performRemoveAction(base.tileLocation, location);
+						if (location.Objects.Remove(c) && base.type.Equals("Crafting") && (int)base.fragility != 2)
+						{
+							location.debris.Add(new Debris(base.bigCraftable ? (-base.ParentSheetIndex) : base.ParentSheetIndex, player.GetToolLocation(), new Vector2(player.GetBoundingBox().Center.X, player.GetBoundingBox().Center.Y)));
+						}
+					}
+					else if (t != null && t.isHeavyHitter() && !(t is MeleeWeapon))
+					{
+						location.playSound("hammer");
+						base.shakeTimer = 100;
+						if (t != player.CurrentTool)
+						{
+							Vector2 zero = Vector2.Zero;
+							zero = ((player.FacingDirection == 1) ? new Vector2(1f, 0f) : ((player.FacingDirection == 3) ? new Vector2(-1f, 0f) : ((player.FacingDirection == 0) ? new Vector2(0f, -1f) : new Vector2(0f, 1f))));
+							if (base.TileLocation.X == 0f && base.TileLocation.Y == 0f && location.getObjectAtTile((int)c.X, (int)c.Y) == this)
+							{
+								base.TileLocation = c;
+							}
+							this.MoveToSafePosition(location, base.TileLocation, 0, zero);
+						}
+					}
+					this.GetMutex().ReleaseLock();
+				});
+			}
+
+			return false;
 		}
 
 		public override void updateWhenCurrentLocation(GameTime time, GameLocation environment)
@@ -411,7 +487,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			{
 				this.kickProgress = -1f;
 			}
-			this.fixLidFrame();
 			this.mutex.Update(environment);
 			if (base.shakeTimer > 0)
 			{
@@ -422,22 +497,44 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 				}
 			}
 
-			if ((bool)this.playerChest)
+			if ((int)this.frameCounter > -1 && this.GetMutex().IsLockHeld())
 			{
-				if ((int)this.frameCounter > -1 && this.GetMutex().IsLockHeld())
-				{
-					this.ShowMenu();
-					this.frameCounter.Value = -1;
-				}
-				else if ((int)this.frameCounter == -1 && Game1.activeClickableMenu == null && this.GetMutex().IsLockHeld())
-				{
-					this.GetMutex().ReleaseLock();
-					this.frameCounter.Value = 1;
-					environment.localSound("stoneStep");
-				}
-
-				UpdateSprite();
+				this.ShowMenu();
+				this.frameCounter.Value = -1;
 			}
+			else if ((int)this.frameCounter == -1 && Game1.activeClickableMenu == null && this.GetMutex().IsLockHeld())
+			{
+				this.GetMutex().ReleaseLock();
+				this.frameCounter.Value = 1;
+				environment.localSound("stoneStep");
+			}
+
+			UpdateSprite();
 		}
-    }
+		public override void actionOnPlayerEntry()
+		{
+			this.kickProgress = -1f;
+			this.localKickStartTile = null;
+		}
+
+		public override void draw(SpriteBatch spriteBatch, int x, int y, float alpha = 1f)
+		{
+			float draw_x = x;
+			float draw_y = y;
+			if (this.localKickStartTile.HasValue)
+			{
+				draw_x = Utility.Lerp(this.localKickStartTile.Value.X, draw_x, this.kickProgress);
+				draw_y = Utility.Lerp(this.localKickStartTile.Value.Y, draw_y, this.kickProgress);
+			}
+			float base_sort_order = System.Math.Max(0f, ((draw_y + 1f) * 64f - 24f) / 10000f) + draw_x * 1E-05f;
+			if (this.localKickStartTile.HasValue)
+			{
+				spriteBatch.Draw(Game1.shadowTexture, Game1.GlobalToLocal(Game1.viewport, new Vector2((draw_x + 0.5f) * 64f, (draw_y + 0.5f) * 64f)), Game1.shadowTexture.Bounds, Color.Black * 0.5f, 0f, new Vector2(Game1.shadowTexture.Bounds.Center.X, Game1.shadowTexture.Bounds.Center.Y), 4f, SpriteEffects.None, 0.0001f);
+				draw_y -= (float)System.Math.Sin((double)this.kickProgress * System.Math.PI) * 0.5f;
+			}
+
+			// Show a "filled" sprite or not, based on if the Harvest Statues has items
+			spriteBatch.Draw(Game1.bigCraftableSpriteSheet, Game1.GlobalToLocal(Game1.viewport, new Vector2(draw_x * 64f + (float)((base.shakeTimer > 0) ? Game1.random.Next(-1, 2) : 0), (draw_y - 1f) * 64f)), Game1.getSourceRectForStandardTileSheet(Game1.bigCraftableSpriteSheet, this.currentSheetIndex, 16, 32), this.tint.Value * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, base_sort_order);
+		}
+	}
 }
