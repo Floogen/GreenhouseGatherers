@@ -102,6 +102,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 			if (this.items.Count >= this.GetActualCapacity() && !doJunimosEatExcessCrops)
             {
 				Game1.showRedMessage($"The Junimos at the {locationName} couldn't harvest due to lack of storage!");
+				return;
 			}
 
 			// Look and harvest for crops & forage products on the ground
