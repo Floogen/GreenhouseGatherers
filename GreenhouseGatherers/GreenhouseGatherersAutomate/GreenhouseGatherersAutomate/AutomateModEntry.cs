@@ -19,18 +19,6 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate
             // Load the monitor
             AutomateModResources.LoadMonitor(this.Monitor);
 
-            // Load our Harmony patches
-            Monitor.Log("This mod patches Automate. If you notice issues with Automate, make sure it happens without this mod before reporting it to the Automate page.", LogLevel.Trace);
-            try
-            {
-                harmonyPatch();
-            }
-            catch (Exception e)
-            {
-                Monitor.Log($"There was a problem patching via Harmony; Harvest Statues will not output harvested products. See log for details.", LogLevel.Error);
-                Monitor.Log($"An exception occured while trying to patch Pathoschild.Automate for Harvest Statues: {e}", LogLevel.Trace);
-                return;
-            }
 
             // Hook into the game launch
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
@@ -44,20 +32,35 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
             // Check if Pathoschild's Automate is in the current mod list
-            if (Helper.ModRegistry.IsLoaded("Pathoschild.Automate"))
+            if (!Helper.ModRegistry.IsLoaded("Pathoschild.Automate"))
             {
-                Monitor.Log("Attempting to hook into Pathoschild.Automate.", LogLevel.Debug);
-                try
-                {
-                    IAutomateAPI automateApi = Helper.ModRegistry.GetApi<IAutomateAPI>("Pathoschild.Automate");
+                return;
+            }
 
-                    // Add the AutomationFactory for Harvest Statue
-                    automateApi.AddFactory(new HarvestStatueFactory());
-                }
-                catch (Exception ex)
-                {
-                    Monitor.Log($"There was an issue with hooking into Pathoschild.Automate: {ex}", LogLevel.Error);
-                }
+            Monitor.Log("Attempting to hook into Pathoschild.Automate.", LogLevel.Debug);
+            try
+            {
+                IAutomateAPI automateApi = Helper.ModRegistry.GetApi<IAutomateAPI>("Pathoschild.Automate");
+
+                // Add the AutomationFactory for Harvest Statue
+                automateApi.AddFactory(new HarvestStatueFactory());
+            }
+            catch (Exception ex)
+            {
+                Monitor.Log($"There was an issue with hooking into Pathoschild.Automate: {ex}", LogLevel.Error);
+            }
+
+            // Load our Harmony patches
+            Monitor.Log("This mod patches Automate. If you notice issues with Automate, make sure it happens without this mod before reporting it to the Automate page.", LogLevel.Trace);
+            try
+            {
+                harmonyPatch();
+            }
+            catch (Exception ex)
+            {
+                Monitor.Log($"There was a problem patching via Harmony; Harvest Statues will not output harvested products. See log for details.", LogLevel.Error);
+                Monitor.Log($"An exception occured while trying to patch Pathoschild.Automate for Harvest Statues: {ex}", LogLevel.Trace);
+                return;
             }
         }
     }
