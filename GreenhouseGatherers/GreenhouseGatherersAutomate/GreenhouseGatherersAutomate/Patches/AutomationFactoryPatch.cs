@@ -25,7 +25,6 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Patches
             {
                 if (obj is HarvestStatue)
                 {
-                    (obj as WoodChipper).Name = "test";
                     return false;
                 }
             }
