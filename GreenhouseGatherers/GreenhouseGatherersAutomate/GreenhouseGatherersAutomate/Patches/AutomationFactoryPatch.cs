@@ -28,10 +28,10 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Patches
                     return false;
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 monitor.Log($"There was a problem with a Harmony patch; Harvest Statues will not output harvested products. See log for details.", LogLevel.Error);
-                monitor.Log($"An exception occured while trying to patch Pathoschild.Stardew.Automate.Framework.AutomationFactory:GetFor(): {e}", LogLevel.Trace);
+                monitor.Log($"An exception occured while trying to patch Pathoschild.Stardew.Automate.Framework.AutomationFactory:GetFor(): {ex}", LogLevel.Trace);
             }
 
             return true;
