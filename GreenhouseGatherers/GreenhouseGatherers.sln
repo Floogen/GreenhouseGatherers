@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenhouseGatherers", "GreenhouseGatherers\GreenhouseGatherers.csproj", "{67067402-DAA7-4257-AF09-1A8C4C09CA9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenhouseGatherersAutomate", "GreenhouseGatherersAutomate\GreenhouseGatherersAutomate.csproj", "{B098E04E-CEA3-4821-A06F-C346252A405C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{67067402-DAA7-4257-AF09-1A8C4C09CA9F} = {67067402-DAA7-4257-AF09-1A8C4C09CA9F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
