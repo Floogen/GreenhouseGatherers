@@ -16,7 +16,7 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Patches
 
         internal static MethodInfo TargetMethod()
         {
-            return AccessTools.Method("Pathoschild.Stardew.Automate.Framework.AutomationFactory:GetFor", new Type[]{ typeof(StardewValley.Object), typeof(GameLocation), typeof(Vector2).MakeByRefType() });
+            return AccessTools.Method("Pathoschild.Stardew.Automate.Framework.AutomationFactory:GetFor", new Type[] { typeof(StardewValley.Object), typeof(GameLocation), typeof(Vector2).MakeByRefType() });
         }
 
         internal static bool Prefix(StardewValley.Object obj, GameLocation location, in Vector2 tile)

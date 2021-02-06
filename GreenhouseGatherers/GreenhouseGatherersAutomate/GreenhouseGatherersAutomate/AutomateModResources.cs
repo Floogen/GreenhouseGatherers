@@ -9,16 +9,16 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate
 {
     public static class AutomateModResources
     {
-		private static IMonitor monitor;
+        private static IMonitor monitor;
 
-		public static void LoadMonitor(IMonitor iMonitor)
-		{
-			monitor = iMonitor;
-		}
+        public static void LoadMonitor(IMonitor iMonitor)
+        {
+            monitor = iMonitor;
+        }
 
-		public static IMonitor GetMonitor()
-		{
-			return monitor;
-		}
-	}
+        public static IMonitor GetMonitor()
+        {
+            return monitor;
+        }
+    }
 }

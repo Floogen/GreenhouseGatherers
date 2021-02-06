@@ -7,19 +7,19 @@ namespace GreenhouseGatherers
     {
         private static IMonitor monitor;
 
-		public static void LoadMonitor(IMonitor iMonitor)
-		{
-			monitor = iMonitor;
-		}
-
-		public static IMonitor GetMonitor()
-		{
-			return monitor;
-		}
-
-		public static string SplitCamelCaseText(string input)
+        public static void LoadMonitor(IMonitor iMonitor)
         {
-			return string.Join(" ", Regex.Split(input, @"(?<!^)(?=[A-Z](?![A-Z]|$))"));
-		}
-	}
+            monitor = iMonitor;
+        }
+
+        public static IMonitor GetMonitor()
+        {
+            return monitor;
+        }
+
+        public static string SplitCamelCaseText(string input)
+        {
+            return string.Join(" ", Regex.Split(input, @"(?<!^)(?=[A-Z](?![A-Z]|$))"));
+        }
+    }
 }

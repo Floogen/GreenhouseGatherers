@@ -9,7 +9,7 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate
     public class HarvestStatueMachine : IMachine
     {
         private readonly HarvestStatue Entity;
-        private int[] validOutputCategories = new int[] { -75, -79, -81}; // Vegetables, Fruit, Forage
+        private int[] validOutputCategories = new int[] { -75, -79, -81 }; // Vegetables, Fruit, Forage
 
         /// <summary>The location which contains the machine.</summary>
         public GameLocation Location { get; }
