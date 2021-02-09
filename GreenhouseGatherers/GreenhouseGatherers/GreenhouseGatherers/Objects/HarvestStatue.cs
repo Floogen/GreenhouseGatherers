@@ -159,7 +159,8 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 }
 
                 // Plant the seed on the ground
-                hoeDirt.crop = new Crop(seedIndex, (int)tile.X, (int)tile.Y);
+                //hoeDirt.crop = new Crop(seedIndex, (int)tile.X, (int)tile.Y);
+                hoeDirt.plant(seedIndex, (int)tile.X, (int)tile.Y, Game1.MasterPlayer, false, hoeDirt.currentLocation);
             }
         }
 
