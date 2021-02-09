@@ -13,6 +13,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         public bool DoJunimosHarvestFromPots { get; set; }
         public bool DoJunimosAppearAfterHarvest { get; set; }
         public bool DoJunimosHarvestFromFruitTrees { get; set; }
+        public bool DoJunimosHarvestFromFlowers { get; set; }
         public bool DoJunimosSowSeedsAfterHarvest { get; set; }
         public bool ForceRecipeUnlock { get; set; }
         public bool EnableHarvestMessage { get; set; }
@@ -26,6 +27,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             DoJunimosHarvestFromPots = true;
             DoJunimosAppearAfterHarvest = true;
             DoJunimosHarvestFromFruitTrees = true;
+            DoJunimosHarvestFromFlowers = true;
             DoJunimosSowSeedsAfterHarvest = true;
 
             ForceRecipeUnlock = false;
