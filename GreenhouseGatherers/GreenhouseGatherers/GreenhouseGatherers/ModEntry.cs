@@ -240,7 +240,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                     }
 
                     // Add the items from the temp Chest to the HarvestStatue
-                    HarvestStatue statueObj = new HarvestStatue(chest.TileLocation, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.DoJunimosSowSeedsAfterHarvest, config.MinimumFruitOnTreeBeforeHarvest);
+                    HarvestStatue statueObj = new HarvestStatue(chest.TileLocation, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.DoJunimosHarvestFromFlowers, config.DoJunimosSowSeedsAfterHarvest, config.MinimumFruitOnTreeBeforeHarvest);
                     statueObj.AddItems(chest.items);
 
                     // Move the modData over in case the Chests Anywhere mod is used (so we can retain name / category data)
