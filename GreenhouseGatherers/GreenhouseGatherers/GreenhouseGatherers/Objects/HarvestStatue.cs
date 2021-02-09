@@ -28,6 +28,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
         private bool doJunimosEatExcessCrops = true;
         private bool doJunimosHarvestFromPots = true;
         private bool doJunimosHarvestFromFruitTrees = true;
+        private bool doJunimosHarvestFromFlowers = true;
         private bool doJunimosSowSeedsAfterHarvest = true;
         private int minimumFruitOnTreeBeforeHarvest = 3;
 
@@ -44,17 +45,19 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
             return 1;
         }
 
-        public HarvestStatue(Vector2 position, int itemID, bool enableHarvestMessage = true, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, bool doJunimosSowSeedsAfterHarvest = false, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, itemID)
         public HarvestStatue()
         {
 
         }
+
+        public HarvestStatue(Vector2 position, int itemID, bool enableHarvestMessage = true, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, bool doJunimosHarvestFromFlowers = true, bool doJunimosSowSeedsAfterHarvest = false, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, itemID)
         {
             this.Name = "Harvest Statue";
             this.enableHarvestMessage = enableHarvestMessage;
             this.doJunimosEatExcessCrops = doJunimosEatExcessCrops;
             this.doJunimosHarvestFromPots = doJunimosHarvestFromPots;
             this.doJunimosHarvestFromFruitTrees = doJunimosHarvestFromFruitTrees;
+            this.doJunimosHarvestFromFlowers = doJunimosHarvestFromFlowers;
             this.doJunimosSowSeedsAfterHarvest = doJunimosSowSeedsAfterHarvest;
             this.minimumFruitOnTreeBeforeHarvest = minimumFruitOnTreeBeforeHarvest;
 
@@ -177,6 +180,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 }
                 //monitor.Log($"Harvesting crop ({tile.X}, {tile.Y}): {crop.forageCrop} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
 
+                if (!doJunimosHarvestFromFlowers && new Object(tile, crop.indexOfHarvest).Category == -80)
+                {
+                    // Crop is flower and config has been set to skip them
+                    continue;
+                }
+
                 // Crop exists and is fully grown, harvest it
                 crop.harvest((int)tile.X, (int)tile.Y, hoeDirt, null);
                 harvestedToday = true;
@@ -232,6 +241,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
                 if (hoeDirt.readyForHarvest())
                 {
+                    if (!doJunimosHarvestFromFlowers && new Object(tile, hoeDirt.crop.indexOfHarvest).Category == -80)
+                    {
+                        // Crop is flower and config has been set to skip them
+                        continue;
+                    }
+
                     hoeDirt.crop.harvest((int)tile.X, (int)tile.Y, hoeDirt, null);
                     harvestedToday = true;
 
