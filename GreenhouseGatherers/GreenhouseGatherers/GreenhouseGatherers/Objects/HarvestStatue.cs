@@ -180,7 +180,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 }
                 //monitor.Log($"Harvesting crop ({tile.X}, {tile.Y}): {crop.forageCrop} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
 
-                if (!doJunimosHarvestFromFlowers && new Object(tile, crop.indexOfHarvest).Category == -80)
+                if (!doJunimosHarvestFromFlowers && new Object(tile, crop.indexOfHarvest, 0).Category == -80)
                 {
                     // Crop is flower and config has been set to skip them
                     continue;
@@ -241,7 +241,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
                 if (hoeDirt.readyForHarvest())
                 {
-                    if (!doJunimosHarvestFromFlowers && new Object(tile, hoeDirt.crop.indexOfHarvest).Category == -80)
+                    if (!doJunimosHarvestFromFlowers && new Object(tile, hoeDirt.crop.indexOfHarvest, 0).Category == -80)
                     {
                         // Crop is flower and config has been set to skip them
                         continue;
