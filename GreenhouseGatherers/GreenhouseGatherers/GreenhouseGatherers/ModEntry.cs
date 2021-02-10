@@ -10,6 +10,8 @@ using System.Linq;
 using GreenhouseGatherers.GreenhouseGatherers.Objects;
 using GreenhouseGatherers.GreenhouseGatherers.Models;
 using StardewValley.Characters;
+using StardewValley.Locations;
+using StardewValley.Buildings;
 
 namespace GreenhouseGatherers.GreenhouseGatherers
 {
@@ -129,33 +131,20 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             Monitor.Log("Saving...", LogLevel.Trace);
             foreach (GameLocation location in Game1.locations)
             {
-                foreach (HarvestStatue harvestStatue in location.Objects.Pairs.Where(p => p.Value is HarvestStatue).Select(p => p.Value))
+                ConvertHarvestStatuesToFlaggedChests(location);
+
+                if (location is BuildableGameLocation)
                 {
-                    // Add the items from HarvestStatue to temp Chest, so the player will still have their items if mod is uninstalled
-                    Chest chest = new Chest(true, harvestStatue.TileLocation);
-                    foreach (var item in harvestStatue.items)
+                    foreach (Building building in (location as BuildableGameLocation).buildings)
                     {
-                        chest.addItem(item);
-                    }
+                        GameLocation indoorLocation = building.indoors.Value;
+                        if (indoorLocation is null)
+                        {
+                            continue;
+                        }
 
-                    // Retain any previous modData in case the Chests Anywhere mod is used (so we can retain name / category data)
-                    foreach (var pair in harvestStatue.modData.Pairs)
-                    {
-                        chest.modData.Add(pair.Key, pair.Value);
+                        ConvertHarvestStatuesToFlaggedChests(indoorLocation);
                     }
-
-                    // If missing, add to the modData: harvestStatueDataFlag == "true"
-                    if (!chest.modData.ContainsKey(harvestStatueDataFlag))
-                    {
-                        chest.modData.Add(harvestStatueDataFlag, "true");
-                    }
-                    else if (chest.modData[harvestStatueDataFlag] != "true")
-                    {
-                        chest.modData[harvestStatueDataFlag] = "true";
-                    }
-
-                    // Remove the HarvestStatue by placing the Chest
-                    location.setObject(harvestStatue.TileLocation, chest);
                 }
             }
 
@@ -232,28 +221,20 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             Monitor.Log("Loading...", LogLevel.Trace);
             foreach (GameLocation location in Game1.locations)
             {
-                foreach (Chest chest in location.Objects.Pairs.Where(p => p.Value is Chest).Select(p => p.Value))
+                ConvertFlaggedChestsToHarvestStatues(location);
+
+                if (location is BuildableGameLocation)
                 {
-                    if (chest is HarvestStatue || !chest.modData.ContainsKey(harvestStatueDataFlag) || chest.modData[harvestStatueDataFlag] != "true")
+                    foreach (Building building in (location as BuildableGameLocation).buildings)
                     {
-                        continue;
+                        GameLocation indoorLocation = building.indoors.Value;
+                        if (indoorLocation is null)
+                        {
+                            continue;
+                        }
+
+                        ConvertFlaggedChestsToHarvestStatues(indoorLocation);
                     }
-
-                    // Add the items from the temp Chest to the HarvestStatue
-                    HarvestStatue statueObj = new HarvestStatue(chest.TileLocation, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.DoJunimosHarvestFromFlowers, config.DoJunimosSowSeedsAfterHarvest, config.MinimumFruitOnTreeBeforeHarvest);
-                    statueObj.AddItems(chest.items);
-
-                    // Move the modData over in case the Chests Anywhere mod is used (so we can retain name / category data)
-                    foreach (var pair in chest.modData.Pairs)
-                    {
-                        statueObj.modData.Add(pair.Key, pair.Value);
-                    }
-
-                    // Remove the temp Chest by placing HarvestStatue
-                    location.setObject(chest.TileLocation, statueObj);
-
-                    // Gather any crops nearby
-                    statueObj.HarvestCrops(location);
                 }
             }
         }
@@ -268,6 +249,65 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             }
 
             LoadHarvestStatuesFromCache();
+        }
+
+        private void ConvertFlaggedChestsToHarvestStatues(GameLocation location)
+        {
+            foreach (Chest chest in location.Objects.Pairs.Where(p => p.Value is Chest).Select(p => p.Value))
+            {
+                if (chest is HarvestStatue || !chest.modData.ContainsKey(harvestStatueDataFlag) || chest.modData[harvestStatueDataFlag] != "true")
+                {
+                    continue;
+                }
+
+                // Add the items from the temp Chest to the HarvestStatue
+                HarvestStatue statueObj = new HarvestStatue(chest.TileLocation, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.DoJunimosHarvestFromFlowers, config.DoJunimosSowSeedsAfterHarvest, config.MinimumFruitOnTreeBeforeHarvest);
+                statueObj.AddItems(chest.items);
+
+                // Move the modData over in case the Chests Anywhere mod is used (so we can retain name / category data)
+                foreach (var pair in chest.modData.Pairs)
+                {
+                    statueObj.modData.Add(pair.Key, pair.Value);
+                }
+
+                // Remove the temp Chest by placing HarvestStatue
+                location.setObject(chest.TileLocation, statueObj);
+
+                // Gather any crops nearby
+                statueObj.HarvestCrops(location);
+            }
+        }
+
+        private void ConvertHarvestStatuesToFlaggedChests(GameLocation location)
+        {
+            foreach (HarvestStatue harvestStatue in location.Objects.Pairs.Where(p => p.Value is HarvestStatue).Select(p => p.Value))
+            {
+                // Add the items from HarvestStatue to temp Chest, so the player will still have their items if mod is uninstalled
+                Chest chest = new Chest(true, harvestStatue.TileLocation);
+                foreach (var item in harvestStatue.items)
+                {
+                    chest.addItem(item);
+                }
+
+                // Retain any previous modData in case the Chests Anywhere mod is used (so we can retain name / category data)
+                foreach (var pair in harvestStatue.modData.Pairs)
+                {
+                    chest.modData.Add(pair.Key, pair.Value);
+                }
+
+                // If missing, add to the modData: harvestStatueDataFlag == "true"
+                if (!chest.modData.ContainsKey(harvestStatueDataFlag))
+                {
+                    chest.modData.Add(harvestStatueDataFlag, "true");
+                }
+                else if (chest.modData[harvestStatueDataFlag] != "true")
+                {
+                    chest.modData[harvestStatueDataFlag] = "true";
+                }
+
+                // Remove the HarvestStatue by placing the Chest
+                location.setObject(harvestStatue.TileLocation, chest);
+            }
         }
     }
 }
