@@ -437,7 +437,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 this.GetMutex().RequestLock(delegate
                 {
                     this.clearNulls();
-                    monitor.Log(this.items.Count.ToString(), LogLevel.Debug);
+                    //monitor.Log(this.items.Count.ToString(), LogLevel.Debug);
                     if (this.isEmpty())
                     {
                         this.performRemoveAction(base.tileLocation, location);
