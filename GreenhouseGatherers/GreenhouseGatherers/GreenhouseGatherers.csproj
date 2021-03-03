@@ -67,22 +67,22 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="[JA] GreenhouseGatherers\BigCraftables\Harvest Statue\big-craftable-2.png">
+    <Content Include="GreenhouseGatherers\assets\HarvestStatue\BigCraftables\Harvest Statue\big-craftable-2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="[JA] GreenhouseGatherers\BigCraftables\Harvest Statue\big-craftable.png">
+    <Content Include="GreenhouseGatherers\assets\HarvestStatue\BigCraftables\Harvest Statue\big-craftable.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="GreenhouseGatherers\assets\HarvestStatue\content-pack.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="manifest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="[JA] GreenhouseGatherers\BigCraftables\Harvest Statue\big-craftable.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="[JA] GreenhouseGatherers\manifest.json">
+    <None Include="GreenhouseGatherers\assets\HarvestStatue\BigCraftables\Harvest Statue\big-craftable.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
