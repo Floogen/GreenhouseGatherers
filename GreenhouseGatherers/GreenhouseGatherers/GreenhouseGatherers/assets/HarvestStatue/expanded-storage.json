@@ -2,7 +2,7 @@
   "Harvest Statue": {
     "Frames": 1,
     "PlayerColor": false,
-    "Capacity": 72,
+    "Capacity": 36,
     "VacuumItems": false,
     "IsPlaceable": true,
     "AccessCarried": false,
