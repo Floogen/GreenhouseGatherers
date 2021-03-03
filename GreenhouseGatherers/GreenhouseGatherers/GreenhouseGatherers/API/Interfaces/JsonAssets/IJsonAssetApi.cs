@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.API.Interfaces
+namespace GreenhouseGatherers.GreenhouseGatherers.API.Interfaces.JsonAssets
 {
     public interface IJsonAssetApi
     {

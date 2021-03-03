@@ -1,4 +1,4 @@
-﻿using GreenhouseGatherers.GreenhouseGatherers.API.Interfaces;
+﻿using GreenhouseGatherers.GreenhouseGatherers.API.Interfaces.JsonAssets;
 using StardewModdingAPI;
 
 namespace GreenhouseGatherers.GreenhouseGatherers.API
