@@ -18,6 +18,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
     {
         private IMonitor monitor = ModResources.GetMonitor();
 
+        public bool isFull = false;
         public bool ateCrops = false;
         public bool harvestedToday = false;
         public bool hasSpawnedJunimos = false;
@@ -129,6 +130,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 SearchForFruitTrees(location);
             }
 
+            if (isFull)
+            {
+                Game1.showRedMessage($"The Junimos at the {locationName} couldn't harvest due to lack of storage!");
+                return;
+            }
+
             // Check if the Junimos ate the crops due to no inventory space
             if (ateCrops)
             {
@@ -142,6 +149,16 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 Game1.addHUDMessage(new HUDMessage($"The Junimos at the {locationName} have harvested crops.", 2));
                 return;
             }
+        }
+
+        private bool HasRoomForHarvest()
+        {
+            if (this.items.Count >= this.GetActualCapacity() && !doJunimosEatExcessCrops)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void AttemptSowSeed(int seedIndex, HoeDirt hoeDirt, Vector2 tile)
@@ -169,6 +186,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
             // Search for crops
             foreach (KeyValuePair<Vector2, TerrainFeature> tileToHoeDirt in location.terrainFeatures.Pairs.Where(p => p.Value is HoeDirt && (p.Value as HoeDirt).crop != null))
             {
+                if (!HasRoomForHarvest())
+                {
+                    isFull = true;
+                    return;
+                }
+
                 Vector2 tile = tileToHoeDirt.Key;
                 HoeDirt hoeDirt = (tileToHoeDirt.Value as HoeDirt);
 
@@ -187,7 +210,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                     continue;
                 }
 
-                // Crop exists and is fully grown, harvest it
+                // Crop exists and is fully grown, attempt to harvest it
                 crop.harvest((int)tile.X, (int)tile.Y, hoeDirt, null);
                 harvestedToday = true;
                 harvestedTiles.Add(tile);
@@ -210,6 +233,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
             List<Vector2> tilesToRemove = new List<Vector2>();
             foreach (KeyValuePair<Vector2, Object> tileToForage in location.objects.Pairs.Where(p => p.Value.isForage(location)))
             {
+                if (!HasRoomForHarvest())
+                {
+                    isFull = true;
+                    return;
+                }
+
                 Vector2 tile = tileToForage.Key;
                 if (this.addItem(tileToForage.Value.getOne()) != null)
                 {
@@ -230,6 +259,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
             // Search for IndoorPots with crops
             foreach (KeyValuePair<Vector2, Object> tileToIndoorPot in location.objects.Pairs.Where(p => p.Value is IndoorPot))
             {
+                if (!HasRoomForHarvest())
+                {
+                    isFull = true;
+                    return;
+                }
+
                 Vector2 tile = tileToIndoorPot.Key;
                 IndoorPot pot = tileToIndoorPot.Value as IndoorPot;
                 HoeDirt hoeDirt = pot.hoeDirt.Value;
@@ -269,6 +304,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
             // Search for IndoorPots with forage items
             foreach (KeyValuePair<Vector2, Object> tileToIndoorPot in location.objects.Pairs.Where(p => p.Value is IndoorPot))
             {
+                if (!HasRoomForHarvest())
+                {
+                    isFull = true;
+                    return;
+                }
+
                 Vector2 tile = tileToIndoorPot.Key;
                 IndoorPot pot = tileToIndoorPot.Value as IndoorPot;
 
@@ -295,6 +336,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
             foreach (KeyValuePair<Vector2, TerrainFeature> tileToFruitTree in location.terrainFeatures.Pairs.Where(p => p.Value is FruitTree && (p.Value as FruitTree).fruitsOnTree >= minimumFruitOnTreeBeforeHarvest))
             {
+                if (!HasRoomForHarvest())
+                {
+                    isFull = true;
+                    return;
+                }
+
                 Vector2 tile = tileToFruitTree.Key;
                 FruitTree fruitTree = (tileToFruitTree.Value as FruitTree);
 

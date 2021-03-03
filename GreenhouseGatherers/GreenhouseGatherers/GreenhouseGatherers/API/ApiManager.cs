@@ -1,5 +1,6 @@
-﻿using GreenhouseGatherers.GreenhouseGatherers.API.Interfaces;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
+using GreenhouseGatherers.GreenhouseGatherers.API.Interfaces.JsonAssets;
+using GreenhouseGatherers.GreenhouseGatherers.API.Interfaces.ExpandedStorage;
 
 namespace GreenhouseGatherers.GreenhouseGatherers.API
 {
@@ -8,7 +9,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.API
         private static IMonitor monitor = ModResources.GetMonitor();
 
         private static IJsonAssetApi jsonAssetApi;
-
+        private static IExpandedStorageAPI expandedStorageApi;
 
         public static void HookIntoJsonAssets(IModHelper helper)
         {
@@ -38,6 +39,25 @@ namespace GreenhouseGatherers.GreenhouseGatherers.API
             }
 
             return jsonAssetApi.GetBigCraftableId("Harvest Statue");
+        }
+
+        public static void HookIntoExpandedStorage(IModHelper helper)
+        {
+            // Attempt to hook into the IMobileApi interface
+            expandedStorageApi = helper.ModRegistry.GetApi<IExpandedStorageAPI>("furyx639.ExpandedStorage");
+
+            if (expandedStorageApi is null)
+            {
+                monitor.Log("Failed to hook into furyx639.ExpandedStorage.", LogLevel.Error);
+                return;
+            }
+
+            monitor.Log("Successfully hooked into furyx639.ExpandedStorage.", LogLevel.Debug);
+        }
+
+        public static IExpandedStorageAPI GetExpandedStorageInterface()
+        {
+            return expandedStorageApi;
         }
     }
 }

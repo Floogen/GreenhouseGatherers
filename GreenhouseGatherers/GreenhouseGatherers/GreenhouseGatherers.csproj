@@ -52,7 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GreenhouseGatherers\API\ApiManager.cs" />
-    <Compile Include="GreenhouseGatherers\API\Interfaces\IJsonAssetApi.cs" />
+    <Compile Include="GreenhouseGatherers\API\Interfaces\ExpandedStorage\IExpandedStorageAPI.cs" />
+    <Compile Include="GreenhouseGatherers\API\Interfaces\JsonAssets\IJsonAssetApi.cs" />
     <Compile Include="GreenhouseGatherers\ModConfig.cs" />
     <Compile Include="GreenhouseGatherers\Models\HarvestStatueData.cs" />
     <Compile Include="GreenhouseGatherers\Models\SaveData.cs" />
@@ -66,22 +67,25 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="[JA] GreenhouseGatherers\BigCraftables\Harvest Statue\big-craftable-2.png">
+    <Content Include="GreenhouseGatherers\assets\HarvestStatue\BigCraftables\Harvest Statue\big-craftable-2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="[JA] GreenhouseGatherers\BigCraftables\Harvest Statue\big-craftable.png">
+    <Content Include="GreenhouseGatherers\assets\HarvestStatue\BigCraftables\Harvest Statue\big-craftable.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="GreenhouseGatherers\assets\HarvestStatue\content-pack.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="GreenhouseGatherers\assets\HarvestStatue\expanded-storage.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="manifest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="[JA] GreenhouseGatherers\BigCraftables\Harvest Statue\big-craftable.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="[JA] GreenhouseGatherers\manifest.json">
+    <None Include="GreenhouseGatherers\assets\HarvestStatue\BigCraftables\Harvest Statue\big-craftable.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
