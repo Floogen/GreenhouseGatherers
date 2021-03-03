@@ -78,6 +78,9 @@
     <None Include="GreenhouseGatherers\assets\HarvestStatue\content-pack.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="GreenhouseGatherers\assets\HarvestStatue\expanded-storage.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="manifest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
