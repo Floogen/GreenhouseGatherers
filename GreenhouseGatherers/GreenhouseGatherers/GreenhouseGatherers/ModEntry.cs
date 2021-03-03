@@ -12,6 +12,7 @@ using GreenhouseGatherers.GreenhouseGatherers.Models;
 using StardewValley.Characters;
 using StardewValley.Locations;
 using StardewValley.Buildings;
+using System.IO;
 
 namespace GreenhouseGatherers.GreenhouseGatherers
 {
@@ -27,6 +28,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         // Config related
         private ModConfig config;
+
+        // Asset related
+        internal static readonly string harvestStatuePath = Path.Combine("assets", "HarvestStatue");
 
         public override void Entry(IModHelper helper)
         {
@@ -115,6 +119,21 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
                 // Hook into Json Asset's IdsAssigned event
                 ApiManager.GetJsonAssetInterface().IdsAssigned += OnIdsAssigned;
+
+                // Check if furyx639's Expanded Storage is in the current mod list
+                if (Helper.ModRegistry.IsLoaded("furyx639.ExpandedStorage"))
+                {
+                    Monitor.Log("Attempting to hook into furyx639.ExpandedStorage.", LogLevel.Debug);
+                    ApiManager.HookIntoExpandedStorage(Helper);
+
+                    // Add the Harvest Statue via Expanded Storage, so we can make use of their expanded chest options
+                    ApiManager.GetExpandedStorageInterface().LoadContentPack(Path.Combine(Helper.DirectoryPath, harvestStatuePath));
+                }
+                else
+                {
+                    // Add the Harvest Statue purely via Json Assets
+                    ApiManager.GetJsonAssetInterface().LoadAssets(Path.Combine(Helper.DirectoryPath, harvestStatuePath));
+                }
             }
         }
 
