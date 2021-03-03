@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GreenhouseGatherers\API\ApiManager.cs" />
+    <Compile Include="GreenhouseGatherers\API\Interfaces\ExpandedStorage\IExpandedStorageAPI.cs" />
     <Compile Include="GreenhouseGatherers\API\Interfaces\JsonAssets\IJsonAssetApi.cs" />
     <Compile Include="GreenhouseGatherers\ModConfig.cs" />
     <Compile Include="GreenhouseGatherers\Models\HarvestStatueData.cs" />
