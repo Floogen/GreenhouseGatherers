@@ -35,7 +35,7 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate
         /// <summary>Get the machine's processing state.</summary>
         public MachineState GetState()
         {
-            if (Entity.items.Where(i => validOutputCategories.Contains(i.Category)).Count() == 0)
+            if (!Entity.items.Any(i => validOutputCategories.Contains(i.Category)) && !HasCoffeeBeans())
             {
                 return MachineState.Empty;
             }
@@ -46,7 +46,7 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate
         /// <summary>Get the output item.</summary>
         public ITrackedStack GetOutput()
         {
-            Item validSelectedItem = Entity.items.First(i => validOutputCategories.Contains(i.Category));
+            Item validSelectedItem = Entity.items.First(i => validOutputCategories.Contains(i.Category) || IsCoffeeBean(i));
             return new TrackedItem(validSelectedItem, onEmpty: item =>
             {
                 Entity.items.Remove(validSelectedItem);
@@ -60,6 +60,16 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate
         {
             // Harvest Statue accepts no input, purely output
             return false;
+        }
+
+        private bool IsCoffeeBean(Item item)
+        {
+            return item.ParentSheetIndex == 433;
+        }
+
+        private bool HasCoffeeBeans()
+        {
+            return Entity.items.Any(i => IsCoffeeBean(i));
         }
     }
 }
