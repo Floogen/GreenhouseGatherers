@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Pathoschild.Stardew.Automate;
 using StardewValley;
+using StardewValley.Objects;
 using System.Linq;
 
 namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate
@@ -35,9 +36,9 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate
         /// <summary>Get the machine's processing state.</summary>
         public MachineState GetState()
         {
-            if (!Entity.items.Any(i => validOutputCategories.Contains(i.Category)) && !HasCoffeeBeans())
+            if (!Entity.items.Any(i => validOutputCategories.Contains(i.Category) || IsCoffeeBean(i)))
             {
-                return MachineState.Empty;
+                return MachineState.Processing;
             }
 
             return MachineState.Done;
@@ -49,6 +50,7 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate
             Item validSelectedItem = Entity.items.First(i => validOutputCategories.Contains(i.Category) || IsCoffeeBean(i));
             return new TrackedItem(validSelectedItem, onEmpty: item =>
             {
+                Entity.clearNulls();
                 Entity.items.Remove(validSelectedItem);
             });
         }
@@ -64,12 +66,7 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate
 
         private bool IsCoffeeBean(Item item)
         {
-            return item.ParentSheetIndex == 433;
-        }
-
-        private bool HasCoffeeBeans()
-        {
-            return Entity.items.Any(i => IsCoffeeBean(i));
+            return item.ParentSheetIndex == 433 && item.Category == -74;
         }
     }
 }
