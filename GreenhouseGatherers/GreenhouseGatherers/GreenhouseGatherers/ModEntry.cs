@@ -303,7 +303,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             {
                 // Add the items from HarvestStatue to temp Chest, so the player will still have their items if mod is uninstalled
                 Chest chest = new Chest(true, harvestStatue.TileLocation);
-                foreach (var item in harvestStatue.items)
+                foreach (var item in harvestStatue.items.Where(i => i != null))
                 {
                     chest.addItem(item);
                 }
