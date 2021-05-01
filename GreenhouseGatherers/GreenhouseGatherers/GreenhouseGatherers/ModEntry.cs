@@ -272,7 +272,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void ConvertFlaggedChestsToHarvestStatues(GameLocation location)
         {
-            foreach (Chest chest in location.Objects.Pairs.Where(p => p.Value is Chest).Select(p => p.Value))
+            foreach (Chest chest in location.Objects.Pairs.Where(p => p.Value is Chest).Select(p => p.Value).ToList())
             {
                 if (chest is HarvestStatue || !chest.modData.ContainsKey(harvestStatueDataFlag) || chest.modData[harvestStatueDataFlag] != "true")
                 {

@@ -85,7 +85,8 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 maxJunimosToSpawn = harvestedTiles.Count / 2;
             }
 
-            for (int x = 0; x < Game1.random.Next(harvestedTiles.Count / 4, System.Math.Min(harvestedTiles.Count, maxJunimosToSpawn)); x++)
+            int junimosToSpawnUpper = System.Math.Min(harvestedTiles.Count, maxJunimosToSpawn);
+            for (int x = 0; x < Game1.random.Next(junimosToSpawnUpper / 4, junimosToSpawnUpper); x++)
             {
                 Vector2 tile = location.getRandomTile();
 
@@ -338,7 +339,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 minimumFruitOnTreeBeforeHarvest = 3;
             }
 
-            foreach (KeyValuePair<Vector2, TerrainFeature> tileToFruitTree in location.terrainFeatures.Pairs.Where(p => p.Value is FruitTree && (p.Value as FruitTree).fruitsOnTree >= minimumFruitOnTreeBeforeHarvest))
+            foreach (KeyValuePair<Vector2, TerrainFeature> tileToFruitTree in location.terrainFeatures.Pairs.Where(p => p.Value is FruitTree && (p.Value as FruitTree).fruitsOnTree >= minimumFruitOnTreeBeforeHarvest).ToList())
             {
                 if (!HasRoomForHarvest())
                 {
