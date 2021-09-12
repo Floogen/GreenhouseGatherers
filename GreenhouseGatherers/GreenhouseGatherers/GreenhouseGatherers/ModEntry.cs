@@ -127,7 +127,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                     ApiManager.HookIntoExpandedStorage(Helper);
 
                     // Add the Harvest Statue via Expanded Storage, so we can make use of their expanded chest options
-                    ApiManager.GetExpandedStorageInterface().LoadContentPack(Path.Combine(Helper.DirectoryPath, harvestStatuePath));
+                    ApiManager.GetExpandedStorageInterface().LoadContentPack(ModManifest, contentPack);
                 }
                 else
                 {
