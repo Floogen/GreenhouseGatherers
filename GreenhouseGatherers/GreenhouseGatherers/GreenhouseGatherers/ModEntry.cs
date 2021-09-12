@@ -4,7 +4,7 @@ using StardewModdingAPI.Events;
 using StardewValley.Objects;
 using System;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using StardewValley;
 using System.Linq;
 using GreenhouseGatherers.GreenhouseGatherers.Objects;
@@ -105,7 +105,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         public void harmonyPatch()
         {
-            var harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
+            var harmony = new Harmony(this.ModManifest.UniqueID);
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
 
