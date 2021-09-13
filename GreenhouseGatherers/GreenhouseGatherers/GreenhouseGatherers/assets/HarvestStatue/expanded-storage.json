@@ -4,7 +4,7 @@
     "Image": "Sprites/empty.png",
     "PlayerColor": false,
     "PlayerConfig": false,
-    "Capacity": 52,
+    "Capacity": 36,
     "VacuumItems": false,
     "IsPlaceable": true,
     "AccessCarried": false,
