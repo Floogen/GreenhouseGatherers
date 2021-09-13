@@ -51,7 +51,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.API
 
         public static string GetHarvestStatueModDataFlag()
         {
-            return ModEntry.harvestStatueDataFlag;
+            return ModEntry.harvestStatueFlag;
         }
     }
 }

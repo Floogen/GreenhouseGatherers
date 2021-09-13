@@ -52,7 +52,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                 return true;
             }
 
-            if (soil.currentLocation.numberOfObjectsWithName("Harvest Statue") == 0)
+            if (!soil.currentLocation.objects.Values.Any(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)))
             {
                 return true;
             }

@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using GreenhouseGatherers.GreenhouseGatherers.Objects;
+using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -27,17 +28,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
 
         internal void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Method(_object, nameof(Object.DayUpdate), new[] { typeof(GameLocation) }), postfix: new HarmonyMethod(GetType(), nameof(DayUpdatePostfix)));
             harmony.Patch(AccessTools.Method(_object, nameof(Object.placementAction), new[] { typeof(GameLocation), typeof(int), typeof(int), typeof(Farmer) }), prefix: new HarmonyMethod(GetType(), nameof(PlacementActionPrefix)));
-        }
-
-        internal static void DayUpdatePostfix(Object __instance, GameLocation location)
-        {
-            if (__instance.modData.ContainsKey(ModEntry.harvestStatueFlag) && __instance is Chest chest)
-            {
-                // Gather any crops nearby
-                //statueObj.HarvestCrops(location);
-            }
         }
 
         [HarmonyBefore(new string[] { "spacechase0.DynamicGameAssets", "furyx639.ExpandedStorage" })]
