@@ -8,7 +8,7 @@
     "$ItemType": "CraftingRecipe",
     "ID": "HarvestStatueRecipe",
     "IsCooking": false,
-    "KnownByDefault": true,
+    "KnownByDefault": false,
     "Result": {
       "Value": "PeacefulEnd.GreenhouseGatherers.HarvestStatue/HarvestStatue",
       "Quantity": 1
