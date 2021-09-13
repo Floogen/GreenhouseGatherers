@@ -1,30 +1,38 @@
 ﻿using HarmonyLib;
-using StardewValley;
-using System.Reflection;
-using StardewModdingAPI;
-using GreenhouseGatherers.GreenhouseGatherers.Objects;
 using Microsoft.Xna.Framework;
-using StardewValley.Menus;
-using System.Linq;
+using Microsoft.Xna.Framework.Graphics;
+using StardewModdingAPI;
+using StardewValley;
 using StardewValley.Characters;
-using StardewValley.TerrainFeatures;
-using Netcode;
+using StardewValley.Locations;
 using StardewValley.Objects;
+using StardewValley.TerrainFeatures;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using Object = StardewValley.Object;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.Patches
+namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
 {
-    [HarmonyPatch]
-    public class CropPatch
+    internal class CropPatch : PatchTemplate
     {
-        private static IMonitor monitor = ModResources.GetMonitor();
+        private readonly Type _object = typeof(Crop);
 
-        internal static MethodInfo TargetMethod()
+        internal CropPatch(IMonitor modMonitor, IModHelper modHelper) : base(modMonitor, modHelper)
         {
-            return AccessTools.Method(typeof(StardewValley.Crop), nameof(StardewValley.Crop.harvest));
+
+        }
+
+        internal void Apply(Harmony harmony)
+        {
+            harmony.Patch(AccessTools.Method(_object, nameof(Crop.harvest), new[] { typeof(int), typeof(int), typeof(HoeDirt), typeof(JunimoHarvester) }), prefix: new HarmonyMethod(GetType(), nameof(HarvestPrefix)));
         }
 
         [HarmonyPriority(Priority.Low)]
-        internal static bool Prefix(Crop __instance, Vector2 ___tilePosition, int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester = null)
+        internal static bool HarvestPrefix(Crop __instance, Vector2 ___tilePosition, int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester = null)
         {
             Object cropObj = new Object(__instance.indexOfHarvest, 1);
             string cropName = "Unknown";
@@ -35,12 +43,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
 
             if (soil is null)
             {
-                monitor.Log($"Crop ({cropName}) at {xTile}, {yTile} is missing HoeDirt, unable to process!", LogLevel.Trace);
+                _monitor.Log($"Crop ({cropName}) at {xTile}, {yTile} is missing HoeDirt, unable to process!", LogLevel.Trace);
                 return true;
             }
             if (soil.currentLocation is null)
             {
-                monitor.Log($"Crop ({cropName}) at {xTile}, {yTile} is missing currentLocation (bad GameLocation?), unable to process!", LogLevel.Trace);
+                _monitor.Log($"Crop ({cropName}) at {xTile}, {yTile} is missing currentLocation (bad GameLocation?), unable to process!", LogLevel.Trace);
                 return true;
             }
 
@@ -56,7 +64,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
             }
 
             // Get the nearby HarvestStatue, which will be placing the harvested crop into
-            HarvestStatue statueObj = soil.currentLocation.objects.Pairs.First(p => p.Value.Name == "Harvest Statue").Value as HarvestStatue;
+            Chest statueObj = soil.currentLocation.objects.Values.First(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)) as Chest;
 
             if ((bool)__instance.dead)
             {
@@ -95,7 +103,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
                 if (statueObj.addItem(o) != null)
                 {
                     // Statue is full, flag it as being eaten
-                    statueObj.ateCrops = true;
+                    statueObj.modData[ModEntry.ateCropsFlag] = true.ToString();
                 }
 
                 return false;
@@ -167,7 +175,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
                     if (statueObj.addItem(harvestedItem.getOne()) != null)
                     {
                         // Statue is full, flag it as being eaten
-                        statueObj.ateCrops = true;
+                        statueObj.modData[ModEntry.ateCropsFlag] = true.ToString();
                     }
                     success = true;
                 }
@@ -184,7 +192,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
                 else
                 {
                     // Statue is full, flag it as being eaten
-                    statueObj.ateCrops = true;
+                    statueObj.modData[ModEntry.ateCropsFlag] = true.ToString();
                 }
                 if (success)
                 {
@@ -202,7 +210,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
                         if (statueObj.addItem(harvestedItem.getOne()) != null)
                         {
                             // Statue is full, flag it as being eaten
-                            statueObj.ateCrops = true;
+                            statueObj.modData[ModEntry.ateCropsFlag] = true.ToString();
                         }
                     }
                     if ((int)__instance.indexOfHarvest == 262 && r.NextDouble() < 0.4)
@@ -211,7 +219,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
                         if (statueObj.addItem(hay_item.getOne()) != null)
                         {
                             // Statue is full, flag it as being eaten
-                            statueObj.ateCrops = true;
+                            statueObj.modData[ModEntry.ateCropsFlag] = true.ToString();
                         }
                     }
                     else if ((int)__instance.indexOfHarvest == 771)
@@ -222,7 +230,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
                             if (statueObj.addItem(mixedSeeds_item.getOne()) != null)
                             {
                                 // Statue is full, flag it as being eaten
-                                statueObj.ateCrops = true;
+                                statueObj.modData[ModEntry.ateCropsFlag] = true.ToString();
                             }
                         }
                     }

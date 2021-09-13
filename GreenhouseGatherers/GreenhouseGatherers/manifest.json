@@ -11,6 +11,10 @@
     {
       "UniqueID": "spacechase0.DynamicGameAssets",
       "IsRequired": true
+    },
+    {
+      "UniqueID": "furyx639.ExpandedStorage",
+      "IsRequired": true
     }
   ]
 }
