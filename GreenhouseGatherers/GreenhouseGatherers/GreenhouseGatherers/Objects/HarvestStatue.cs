@@ -51,7 +51,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
         }
 
-        public HarvestStatue(Vector2 position, int itemID, bool enableHarvestMessage = true, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, bool doJunimosHarvestFromFlowers = true, bool doJunimosSowSeedsAfterHarvest = false, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, itemID)
+        public HarvestStatue(Vector2 position, bool enableHarvestMessage = true, bool doJunimosEatExcessCrops = true, bool doJunimosHarvestFromPots = true, bool doJunimosHarvestFromFruitTrees = true, bool doJunimosHarvestFromFlowers = true, bool doJunimosSowSeedsAfterHarvest = false, int minimumFruitOnTreeBeforeHarvest = 3) : base(true, position, 130)
         {
             this.Name = "Harvest Statue";
             this.enableHarvestMessage = enableHarvestMessage;
@@ -61,8 +61,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
             this.doJunimosHarvestFromFlowers = doJunimosHarvestFromFlowers;
             this.doJunimosSowSeedsAfterHarvest = doJunimosSowSeedsAfterHarvest;
             this.minimumFruitOnTreeBeforeHarvest = minimumFruitOnTreeBeforeHarvest;
-
-            this.currentSheetIndex = itemID;
 
             base.type.Value = "Crafting";
             base.bigCraftable.Value = true;
@@ -607,7 +605,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
             }
 
             // Show a "filled" sprite or not, based on if the Harvest Statues has items
-            spriteBatch.Draw(Game1.bigCraftableSpriteSheet, Game1.GlobalToLocal(Game1.viewport, new Vector2(draw_x * 64f + (float)((base.shakeTimer > 0) ? Game1.random.Next(-1, 2) : 0), (draw_y - 1f) * 64f)), Game1.getSourceRectForStandardTileSheet(Game1.bigCraftableSpriteSheet, this.currentSheetIndex, 16, 32), this.tint.Value * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, base_sort_order);
+            spriteBatch.Draw(this.items.Any() ? ModResources.filledStatue : ModResources.emptyStatue, Game1.GlobalToLocal(Game1.viewport, new Vector2(draw_x * 64f + (float)((base.shakeTimer > 0) ? Game1.random.Next(-1, 2) : 0), (draw_y - 1f) * 64f)), new Rectangle(0, 0, 16, 32), this.tint.Value * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, base_sort_order);
         }
     }
 }

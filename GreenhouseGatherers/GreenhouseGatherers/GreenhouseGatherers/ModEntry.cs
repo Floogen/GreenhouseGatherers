@@ -23,8 +23,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         private string saveDataCachePath;
 
         // Save related
-        private int harvestStatueID;
-        private string harvestStatueDataFlag;
+        internal static readonly string harvestStatueDataFlag = "PeacefulEnd.GreenhouseGatherers/is-harvest-statue";
 
         // Config related
         private ModConfig config;
@@ -37,6 +36,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             // Load the monitor
             ModResources.LoadMonitor(this.Monitor);
 
+            // Load assets
+            ModResources.LoadAssets(helper, harvestStatuePath);
+
             // Load our Harmony patches
             try
             {
@@ -47,9 +49,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 Monitor.Log($"Issue with Harmony patch: {e}", LogLevel.Error);
                 return;
             }
-
-            // Set the modData flag we'll be using
-            harvestStatueDataFlag = $"{this.ModManifest.UniqueID}/is-harvest-statue";
 
             // Load the config
             this.config = helper.ReadConfig<ModConfig>();
@@ -112,13 +111,18 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
             // Check if spacechase0's JsonAssets is in the current mod list
-            if (Helper.ModRegistry.IsLoaded("spacechase0.JsonAssets"))
+            if (Helper.ModRegistry.IsLoaded("spacechase0.DynamicGameAssets"))
             {
-                Monitor.Log("Attempting to hook into spacechase0.JsonAssets.", LogLevel.Debug);
-                ApiManager.HookIntoJsonAssets(Helper);
+                Monitor.Log("Attempting to hook into spacechase0.DynamicGameAssets.", LogLevel.Debug);
+                ApiManager.HookIntoDynamicGameAssets(Helper);
 
-                // Hook into Json Asset's IdsAssigned event
-                ApiManager.GetJsonAssetInterface().IdsAssigned += OnIdsAssigned;
+                var contentPack = Helper.ContentPacks.CreateTemporary(
+                    Path.Combine(Helper.DirectoryPath, harvestStatuePath),
+                    "PeacefulEnd.GreenhouseGatherers.HarvestStatue",
+                    "PeacefulEnd.GreenhouseGatherers.HarvestStatue",
+                    "Adds craftable Junimo Harvest Statues.",
+                    "PeacefulEnd",
+                    new SemanticVersion("1.0.0"));
 
                 // Check if furyx639's Expanded Storage is in the current mod list
                 if (Helper.ModRegistry.IsLoaded("furyx639.ExpandedStorage"))
@@ -127,20 +131,14 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                     ApiManager.HookIntoExpandedStorage(Helper);
 
                     // Add the Harvest Statue via Expanded Storage, so we can make use of their expanded chest options
-                    ApiManager.GetExpandedStorageInterface().LoadContentPack(ModManifest, contentPack);
+                    ApiManager.GetExpandedStorageInterface().LoadContentPack(contentPack.Manifest, Path.Combine(Helper.DirectoryPath, harvestStatuePath));
                 }
                 else
                 {
                     // Add the Harvest Statue purely via Json Assets
-                    ApiManager.GetJsonAssetInterface().LoadAssets(Path.Combine(Helper.DirectoryPath, harvestStatuePath));
+                    ApiManager.GetDynamicGameAssetsInterface().AddEmbeddedPack(contentPack.Manifest, Path.Combine(Helper.DirectoryPath, harvestStatuePath));
                 }
             }
-        }
-
-        private void OnIdsAssigned(object sender, EventArgs e)
-        {
-            // Get the Harvest Statue item ID
-            harvestStatueID = ApiManager.GetHarvestStatueID();
         }
 
         [EventPriority(EventPriority.High + 1)]
@@ -205,7 +203,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 }
 
                 // Add the items from the temp Chest to the HarvestStatue
-                HarvestStatue statueObj = new HarvestStatue(statueData.Tile, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.DoJunimosHarvestFromFlowers, config.DoJunimosSowSeedsAfterHarvest, config.MinimumFruitOnTreeBeforeHarvest);
+                HarvestStatue statueObj = new HarvestStatue(statueData.Tile, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.DoJunimosHarvestFromFlowers, config.DoJunimosSowSeedsAfterHarvest, config.MinimumFruitOnTreeBeforeHarvest);
                 statueObj.AddItems(chest.items);
 
                 // Set the statueObj.modData to tempChest.modData in case the Chests Anywhere mod is used (so we can retain name / category data)
@@ -280,7 +278,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 }
 
                 // Add the items from the temp Chest to the HarvestStatue
-                HarvestStatue statueObj = new HarvestStatue(chest.TileLocation, harvestStatueID, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.DoJunimosHarvestFromFlowers, config.DoJunimosSowSeedsAfterHarvest, config.MinimumFruitOnTreeBeforeHarvest);
+                HarvestStatue statueObj = new HarvestStatue(chest.TileLocation, config.EnableHarvestMessage, config.DoJunimosEatExcessCrops, config.DoJunimosHarvestFromPots, config.DoJunimosHarvestFromFruitTrees, config.DoJunimosHarvestFromFlowers, config.DoJunimosSowSeedsAfterHarvest, config.MinimumFruitOnTreeBeforeHarvest);
                 statueObj.AddItems(chest.items);
 
                 // Move the modData over in case the Chests Anywhere mod is used (so we can retain name / category data)

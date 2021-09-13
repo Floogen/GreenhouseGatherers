@@ -22,7 +22,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
         [HarmonyPriority(Priority.VeryHigh)]
         internal static bool Prefix(Object __instance, GameLocation location, int x, int y, Farmer who = null)
         {
-            if (__instance.name == "Harvest Statue")
+            if (__instance.DisplayName == "Harvest Statue")
             {
                 if (location.IsOutdoors)
                 {
@@ -32,7 +32,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
                     return false;
                 }
 
-                if (location.numberOfObjectsWithName("Harvest Statue") > 0)
+                if (location.objects.Values.Any(o => o.modData.ContainsKey(ModEntry.harvestStatueDataFlag)))
                 {
                     monitor.Log("Attempted to place another Harvest Statue where there already is one!", LogLevel.Trace);
                     Game1.showRedMessage("You can only place one Harvest Statue per building!");
@@ -46,7 +46,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches
                 HarvestStatue harvestStatue = __instance as HarvestStatue;
                 if (harvestStatue is null)
                 {
-                    harvestStatue = new HarvestStatue(placementTile, __instance.ParentSheetIndex);
+                    harvestStatue = new HarvestStatue(placementTile);
                 }
 
                 harvestStatue.placementAction(location, x, y);
