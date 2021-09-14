@@ -1,29 +1,40 @@
-﻿using Harmony;
-using StardewValley;
-using System.Reflection;
-using StardewModdingAPI;
-using GreenhouseGatherers.GreenhouseGatherers.Objects;
+﻿using HarmonyLib;
 using Microsoft.Xna.Framework;
-using StardewValley.Menus;
-using System.Linq;
-using StardewValley.Characters;
+using Microsoft.Xna.Framework.Graphics;
 using Netcode;
+using StardewModdingAPI;
+using StardewValley;
+using StardewValley.Characters;
+using StardewValley.Locations;
+using StardewValley.Objects;
+using StardewValley.TerrainFeatures;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using Object = StardewValley.Object;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.Patches
+namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
 {
-    [HarmonyPatch]
-    public class JunimoPatch
+    internal class JunimoPatch : PatchTemplate
     {
-        private static IMonitor monitor = ModResources.GetMonitor();
+        private readonly Type _object = typeof(Junimo);
 
-        internal static ConstructorInfo TargetMethod()
+        internal JunimoPatch(IMonitor modMonitor, IModHelper modHelper) : base(modMonitor, modHelper)
         {
-            return AccessTools.Constructor(typeof(Junimo), new System.Type[] { typeof(Vector2), typeof(int), typeof(bool) });
+
         }
 
-        internal static void Postfix(ref NetColor ___color)
+        internal void Apply(Harmony harmony)
         {
-            if (Game1.currentLocation.numberOfObjectsWithName("Harvest Statue") == 0 || Game1.currentLocation.Name == "CommunityCenter")
+            harmony.Patch(AccessTools.Constructor(typeof(Junimo), null), postfix: new HarmonyMethod(GetType(), nameof(JunimoPostfix)));
+        }
+
+        private static void JunimoPostfix(ref NetColor ___color)
+        {
+            if (!Game1.currentLocation.objects.Values.Any(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)) || Game1.currentLocation.Name == "CommunityCenter")
             {
                 return;
             }
