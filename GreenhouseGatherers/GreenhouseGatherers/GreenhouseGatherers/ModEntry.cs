@@ -117,7 +117,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            // Check if spacechase0's JsonAssets is in the current mod list
+            // Check if spacechase0's DynamicGameAssets is in the current mod list
             if (Helper.ModRegistry.IsLoaded("spacechase0.DynamicGameAssets"))
             {
                 Monitor.Log("Attempting to hook into spacechase0.DynamicGameAssets.", LogLevel.Debug);

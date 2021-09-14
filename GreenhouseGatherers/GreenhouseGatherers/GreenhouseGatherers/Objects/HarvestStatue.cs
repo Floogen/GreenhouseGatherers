@@ -49,9 +49,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
         {
             chest = storage;
             location = gameLocation;
-
-            // Reset the Harvest Statue related modData for storage
-            //chest.modData[ateCropsFlag] = false.ToString();
         }
 
         public void SpawnJunimos(int maxJunimosToSpawn = -1)
