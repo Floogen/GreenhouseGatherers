@@ -1,0 +1,7 @@
+{
+  "big-craftable.HarvestStatue.name": "수확 석상",
+  "big-craftable.HarvestStatue.description": "주니모를 유혹하는 마법의 조각상. 온실에 배치하면 주니모들이 근처의 작물을 수확합니다.",
+
+  "crafting.HarvestStatueRecipe.name": "수확 석상",
+  "crafting.HarvestStatueRecipe.description": "수확 조각상을 만듭니다."
+}
