@@ -9,7 +9,7 @@
   "UpdateKeys": [ "Nexus:7619" ],
   "Dependencies": [
     {
-      "UniqueID": "spacechase0.DynamicGameAssets",
+      "UniqueID": "Pathoschild.ContentPatcher",
       "IsRequired": true
     },
     {

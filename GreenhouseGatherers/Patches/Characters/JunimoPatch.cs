@@ -34,7 +34,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
 
         private static void JunimoPostfix(ref NetColor ___color)
         {
-            if (!Game1.currentLocation.objects.Values.Any(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)) || Game1.currentLocation.Name == "CommunityCenter")
+            if (Game1.currentLocation is not null && Game1.currentLocation.objects is not null && !Game1.currentLocation.objects.Values.Any(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)) || Game1.currentLocation.Name == "CommunityCenter")
             {
                 return;
             }

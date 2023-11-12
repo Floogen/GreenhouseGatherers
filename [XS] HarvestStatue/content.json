@@ -1,0 +1,45 @@
+﻿{
+  "Format": "1.28.0",
+  "Changes": [
+    // Load Texture
+    {
+      "Action": "Load",
+      "Target": "PeacefulEnd.GreenhouseGatherers.HarvestStatue/HarvestStatue",
+      "FromFile": "assets/empty.png"
+    },
+
+    // Load Storage Data
+    {
+      "Action": "EditData",
+      "Target": "furyx639.ExpandedStorage/Storages",
+      "Entries": {
+        "HarvestStatue": {
+          "DisplayName": "{{i18n: big-craftable.HarvestStatue.name}}",
+          "Description": "{{i18n: big-craftable.HarvestStatue.description}}",
+          "Frames": 1,
+          "Image": "PeacefulEnd.GreenhouseGatherers.HarvestStatue/HarvestStatue",
+          "PlayerColor": false,
+          "PlayerConfig": false,
+          "Capacity": 36,
+          "VacuumItems": false,
+          "IsPlaceable": true,
+          "AccessCarried": false,
+          "CanCarry": false,
+          "OpenSound": "stoneStep",
+          "PlaceSound": "hammer",
+          "ModData": {
+            "Pathoschild.Automate/StoreItems": "Disable",
+            "PeacefulEnd.GreenhouseGatherers/HarvestStatue": "true",
+            "PeacefulEnd.GreenhouseGatherers/AteCrops": "false",
+            "PeacefulEnd.GreenhouseGatherers/HasSpawnedJunimos": "false"
+          },
+          "DisabledFeatures": [
+            "AccessCarried",
+            "VacuumItems",
+            "CanCarry"
+          ]
+        }
+      }
+    }
+  ]
+}

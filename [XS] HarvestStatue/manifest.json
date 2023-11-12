@@ -1,0 +1,18 @@
+﻿{
+	"Name": "[XS] Harvest Statue",
+	"Author": "PeacefulEnd",
+	"Version": "2.0.1",
+	"Description": "...",
+	"UniqueID": "PeacefulEnd.GreenhouseGatherers.HarvestStatue",
+  "UpdateKeys": [ "Nexus:7619" ],
+	"Dependencies": [
+		{
+			"UniqueID": "furyx639.ExpandedStorage",
+			"IsRequired": true,
+			"MinimumVersion": "2.0.0"
+		}
+	],
+  "ContentPackFor": {
+    "UniqueID": "Pathoschild.ContentPatcher"
+  }
+}

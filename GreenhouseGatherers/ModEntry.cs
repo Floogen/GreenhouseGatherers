@@ -15,6 +15,7 @@ using StardewValley.Buildings;
 using System.IO;
 using GreenhouseGatherers.GreenhouseGatherers.Patches;
 using GreenhouseGatherers.GreenhouseGatherers.Patches.Objects;
+using StardewValley.Monsters;
 
 namespace GreenhouseGatherers.GreenhouseGatherers
 {
@@ -61,6 +62,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             // Load the config
             this.config = helper.ReadConfig<ModConfig>();
 
+            // Hook into Content related events
+            helper.Events.Content.AssetRequested += OnAssetRequested;
+
             // Hook into the game launch
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
 
@@ -69,6 +73,26 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
             // Hook into save related events
             helper.Events.GameLoop.DayStarted += this.OnDayStarted;
+        }
+
+        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+        {
+            if (e.NameWithoutLocale.IsEquivalentTo("Data/Mail"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, string>().Data;
+                    data["WizardHarvestStatueRecipe"] = "Enclosed you'll find blueprints for a statue imbued with forest magic.^ ^If placed indoors, it allows Junimos to enter buildings and harvest crops.^ ^Use it well...^ ^-M. Rasmodius, Wizard%item craftingRecipe HarvestStatueRecipe %%";
+                });
+            }
+            else if (e.NameWithoutLocale.IsEquivalentTo("Data/CraftingRecipes"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, string>().Data;
+                    data["HarvestStatueRecipe"] = "74 1 390 350 268 150/Home/232/true/null/Harvest Statue";
+                });
+            }
         }
 
         private void OnWarped(object sender, WarpedEventArgs e)
@@ -135,10 +159,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 if (Helper.ModRegistry.IsLoaded("furyx639.ExpandedStorage"))
                 {
                     Monitor.Log("Attempting to hook into furyx639.ExpandedStorage.", LogLevel.Debug);
-                    ApiManager.HookIntoExpandedStorage(Helper);
-
-                    // Add the Harvest Statue via Expanded Storage, so we can make use of their expanded chest options
-                    ApiManager.GetExpandedStorageInterface().LoadContentPack(contentPack.Manifest, Path.Combine(Helper.DirectoryPath, harvestStatuePath));
                 }
                 else
                 {
@@ -153,7 +173,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         {
             if (!Game1.MasterPlayer.mailReceived.Contains("WizardHarvestStatueRecipe") && (config.ForceRecipeUnlock || Game1.MasterPlayer.mailReceived.Contains("hasPickedUpMagicInk")))
             {
-                Helper.Content.AssetEditors.Add(new RecipeMail());
                 Game1.MasterPlayer.mailbox.Add("WizardHarvestStatueRecipe");
             }
             if (Game1.MasterPlayer.mailReceived.Contains("WizardHarvestStatueRecipe") && !Game1.MasterPlayer.knowsRecipe("HarvestStatueRecipe"))
