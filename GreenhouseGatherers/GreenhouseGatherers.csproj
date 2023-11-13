@@ -3,7 +3,7 @@
 		<AssemblyName>GreenhouseGatherers</AssemblyName>
 		<RootNamespace>GreenhouseGatherers</RootNamespace>
 		<Version>2.0.1</Version>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<EnableHarmony>true</EnableHarmony>
 		<EnableModZip>false</EnableModZip>
 		<EnableModDeploy>false</EnableModDeploy>
@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.0.0" />
+		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -28,12 +28,12 @@
 			powershell -Command "(ls *manifest.json -rec | foreach-object { $f=$_.FullName; (gc -LiteralPath \"$f\") -replace 'REPLACE_ME_WITH_VERSION',  '$(Version)' | sc -LiteralPath \"$f\" })"
 
 			powershell Remove-Item -Path '$(SolutionDir)releases\latest\*' -Recurse -Force
-			xcopy /s /y /i "$(SolutionDir)$(SolutionName)\bin\Debug\net5.0" "$(SolutionDir)releases\latest\$(SolutionName)"
+			xcopy /s /y /i "$(SolutionDir)$(SolutionName)\bin\Debug\${TargetFramework}" "$(SolutionDir)releases\latest\$(SolutionName)"
 
 			:: Start of Greenhouse Gatherer specific copy logic block
 			mkdir "$(SolutionDir)releases\latest\temp"
 			move "$(SolutionDir)releases\latest\$(SolutionName)" "$(SolutionDir)releases\latest\temp"
-			xcopy /s /y /i "$(SolutionDir)GreenhouseGatherersAutomate\bin\Debug\net5.0" "$(SolutionDir)releases\latest\temp\GreenhouseGatherersAutomate"			
+			xcopy /s /y /i "$(SolutionDir)GreenhouseGatherersAutomate\bin\Debug\${TargetFramework}" "$(SolutionDir)releases\latest\temp\GreenhouseGatherersAutomate"			
 			xcopy /s /y /i "$(SolutionDir)[XS] HarvestStatue" "$(SolutionDir)releases\latest\temp\[XS] HarvestStatue"
 			ren "$(SolutionDir)releases\latest\temp" "$(SolutionName)"
 
