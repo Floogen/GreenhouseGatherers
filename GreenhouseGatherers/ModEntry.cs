@@ -16,6 +16,7 @@ using System.IO;
 using GreenhouseGatherers.GreenhouseGatherers.Patches;
 using GreenhouseGatherers.GreenhouseGatherers.Patches.Objects;
 using StardewValley.Monsters;
+using GreenhouseGatherers.Utilities;
 
 namespace GreenhouseGatherers.GreenhouseGatherers
 {
@@ -24,15 +25,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         // Legacy save related
         private SaveData saveData;
         private string saveDataCachePath;
-
-        // Save related
-        internal static readonly string oldHarvestStatueFlag = "PeacefulEnd.GreenhouseGatherers/is-harvest-statue";
-        internal static readonly string hasConvertedOldStatues = "PeacefulEnd.GreenhouseGatherers/HasConvertedToNewStatues";
-
-        // Harvest Statue ModData
-        internal static readonly string harvestStatueFlag = "PeacefulEnd.GreenhouseGatherers/HarvestStatue";
-        internal static readonly string ateCropsFlag = "PeacefulEnd.GreenhouseGatherers/AteCrops";
-        internal static readonly string spawnedJunimosFlag = "PeacefulEnd.GreenhouseGatherers/HasSpawnedJunimos";
 
         // Config related
         private ModConfig config;
@@ -97,7 +89,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void OnWarped(object sender, WarpedEventArgs e)
         {
-            if (e.OldLocation.objects.Values.Any(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)) && e.OldLocation.NameOrUniqueName != "CommunityCenter")
+            if (e.OldLocation.objects.Values.Any(o => o.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID)) && e.OldLocation.NameOrUniqueName != "CommunityCenter")
             {
                 for (int i = e.OldLocation.characters.Count - 1; i >= 0; i--)
                 {
@@ -108,15 +100,15 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 }
             }
 
-            if (!config.DoJunimosAppearAfterHarvest || !e.NewLocation.objects.Values.Any(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)))
+            if (!config.DoJunimosAppearAfterHarvest || !e.NewLocation.objects.Values.Any(o => o.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID)))
             {
                 return;
             }
 
             // Location contains a Harvest Statue, see if we need to spawn Junimos
-            if (e.NewLocation.objects.Values.FirstOrDefault(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)) is Chest chest && chest != null)
+            if (e.NewLocation.objects.Values.FirstOrDefault(o => o.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID)) is Chest chest && chest != null)
             {
-                if (bool.Parse(chest.modData[ModEntry.spawnedJunimosFlag]))
+                if (bool.Parse(chest.modData[ModDataKeys.HAS_SPAWNED_JUNIMOS]))
                 {
                     return;
                 }
@@ -180,7 +172,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 Game1.MasterPlayer.craftingRecipes.Add("HarvestStatueRecipe", 0);
             }
 
-            if (!Game1.MasterPlayer.modData.ContainsKey(ModEntry.hasConvertedOldStatues))
+            if (!Game1.MasterPlayer.modData.ContainsKey(ModDataKeys.HAS_CONVERTED_OLD_STATUES))
             {
                 ConvertOldHarvestStatues();
             }
@@ -208,10 +200,10 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void DoMorningHarvest(GameLocation location)
         {
-            foreach (Chest chest in location.Objects.Values.Where(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)))
+            foreach (Chest chest in location.Objects.Values.Where(o => o.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID)))
             {
                 // Reset daily modData flags
-                chest.modData[ModEntry.spawnedJunimosFlag] = false.ToString();
+                chest.modData[ModDataKeys.HAS_SPAWNED_JUNIMOS] = false.ToString();
 
                 // Gather any crops nearby
                 var harvestStatue = new HarvestStatue(chest, location);
@@ -247,7 +239,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         {
             foreach (Chest chest in location.Objects.Pairs.Where(p => p.Value is Chest).Select(p => p.Value).ToList())
             {
-                if (!chest.modData.ContainsKey(oldHarvestStatueFlag))
+                if (!chest.modData.ContainsKey(ModDataKeys.OLD_HARVEST_STATUE_ID))
                 {
                     continue;
                 }
@@ -265,7 +257,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 // Move the modData over in case the Chests Anywhere mod is used (so we can retain name / category data)
                 if (wasReplaced && location.objects.ContainsKey(tileLocation) && location.objects[tileLocation] is Chest statueObj)
                 {
-                    foreach (var pair in modData.Where(p => p.Key != oldHarvestStatueFlag))
+                    foreach (var pair in modData.Where(p => p.Key != ModDataKeys.OLD_HARVEST_STATUE_ID))
                     {
                         statueObj.modData[pair.Key] = pair.Value;
                     }

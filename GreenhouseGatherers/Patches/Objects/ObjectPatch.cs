@@ -1,4 +1,5 @@
 ﻿using GreenhouseGatherers.GreenhouseGatherers.Objects;
+using GreenhouseGatherers.Utilities;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -44,7 +45,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                     return false;
                 }
 
-                if (location.objects.Values.Any(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)))
+                if (location.objects.Values.Any(o => o.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID)))
                 {
                     _monitor.Log("Attempted to place another Harvest Statue where there already is one!", LogLevel.Trace);
                     Game1.showRedMessage("You can only place one Harvest Statue per building!");

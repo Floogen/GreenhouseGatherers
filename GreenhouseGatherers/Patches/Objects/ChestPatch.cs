@@ -1,4 +1,5 @@
 ﻿
+using GreenhouseGatherers.Utilities;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -34,7 +35,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
         [HarmonyBefore(new string[] { "spacechase0.DynamicGameAssets", "furyx639.ExpandedStorage" })]
         private static bool DrawPrefix(Object __instance, SpriteBatch spriteBatch, int x, int y, float alpha = 1f)
         {
-            if (__instance.modData.ContainsKey(ModEntry.harvestStatueFlag) && __instance is Chest chest)
+            if (__instance.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID) && __instance is Chest chest)
             {
                 float draw_x = x;
                 float draw_y = y;
@@ -61,7 +62,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
 
         internal static void DayUpdatePostfix(Object __instance, GameLocation location)
         {
-            if (__instance.modData.ContainsKey(ModEntry.harvestStatueFlag) && __instance is Chest chest)
+            if (__instance.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID) && __instance is Chest chest)
             {
                 // Do harvest logic here
             }
@@ -80,7 +81,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                     return false;
                 }
 
-                if (location.objects.Values.Any(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)))
+                if (location.objects.Values.Any(o => o.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID)))
                 {
                     _monitor.Log("Attempted to place another Harvest Statue where there already is one!", LogLevel.Trace);
                     Game1.showRedMessage("You can only place one Harvest Statue per building!");

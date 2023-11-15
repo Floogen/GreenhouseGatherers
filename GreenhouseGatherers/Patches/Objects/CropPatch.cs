@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using GreenhouseGatherers.Utilities;
+using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -53,7 +54,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                 return true;
             }
 
-            if (!soil.Location.objects.Values.Any(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)))
+            if (!soil.Location.objects.Values.Any(o => o.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID)))
             {
                 return true;
             }
@@ -65,7 +66,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
             }
 
             // Get the nearby HarvestStatue, which will be placing the harvested crop into
-            Chest statueObj = soil.Location.objects.Values.First(o => o.modData.ContainsKey(ModEntry.harvestStatueFlag)) as Chest;
+            Chest statueObj = soil.Location.objects.Values.First(o => o.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID)) as Chest;
 
             if (__instance.dead.Value)
             {
@@ -104,7 +105,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                 if (statueObj.addItem(o) != null)
                 {
                     // Statue is full, flag it as being eaten
-                    statueObj.modData[ModEntry.ateCropsFlag] = true.ToString();
+                    statueObj.modData[ModDataKeys.HAS_EATEN_CROPS] = true.ToString();
                 }
 
                 return false;
@@ -199,7 +200,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                         if (statueObj.addItem(harvestedItem.getOne()) != null)
                         {
                             // Statue is full, flag it as being eaten
-                            statueObj.modData[ModEntry.ateCropsFlag] = true.ToString();
+                            statueObj.modData[ModDataKeys.HAS_EATEN_CROPS] = true.ToString();
                         }
                     }
 

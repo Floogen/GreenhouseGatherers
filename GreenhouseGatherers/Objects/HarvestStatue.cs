@@ -1,4 +1,5 @@
 ﻿using GreenhouseGatherers.Framework.Extensions;
+using GreenhouseGatherers.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Netcode;
@@ -130,7 +131,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
             }
 
             // Check if the Junimos ate the crops due to no inventory space
-            if (bool.Parse(chest.modData[ModEntry.ateCropsFlag]))
+            if (bool.Parse(chest.modData[ModDataKeys.HAS_EATEN_CROPS]))
             {
                 Game1.showRedMessage($"The Junimos at the {locationName} ate harvested crops due to lack of storage!");
                 return;
@@ -235,7 +236,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 Vector2 tile = tileToForage.Key;
                 if (chest.addItem(tileToForage.Value.getOne()) != null)
                 {
-                    chest.modData[ModEntry.ateCropsFlag] = true.ToString();
+                    chest.modData[ModDataKeys.HAS_EATEN_CROPS] = true.ToString();
                 }
 
                 tilesToRemove.Add(tile);
@@ -310,7 +311,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 {
                     if (chest.addItem(pot.heldObject.Value.getOne()) != null)
                     {
-                        chest.modData[ModEntry.ateCropsFlag] = true.ToString();
+                        chest.modData[ModDataKeys.HAS_EATEN_CROPS] = true.ToString();
                     }
 
                     pot.heldObject.Value = null;
@@ -345,7 +346,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
                     if (chest.addItem(fruit) is not null)
                     {
-                        chest.modData[ModEntry.ateCropsFlag] = true.ToString();
+                        chest.modData[ModDataKeys.HAS_EATEN_CROPS] = true.ToString();
 
                         fruitTree.fruit[i] = null;
                     }

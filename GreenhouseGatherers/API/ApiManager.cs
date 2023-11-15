@@ -1,5 +1,6 @@
 ﻿using StardewModdingAPI;
 using GreenhouseGatherers.GreenhouseGatherers.API.Interfaces.DynamicGameAssets;
+using GreenhouseGatherers.Utilities;
 
 namespace GreenhouseGatherers.GreenhouseGatherers.API
 {
@@ -30,7 +31,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.API
 
         public static string GetHarvestStatueModDataFlag()
         {
-            return ModEntry.harvestStatueFlag;
+            return ModDataKeys.HARVEST_STATUE_ID;
         }
     }
 }
