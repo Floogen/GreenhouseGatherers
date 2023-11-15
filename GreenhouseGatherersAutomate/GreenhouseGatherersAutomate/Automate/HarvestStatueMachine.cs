@@ -36,7 +36,7 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate
         /// <summary>Get the machine's processing state.</summary>
         public MachineState GetState()
         {
-            if (!Entity.items.Any(i => validOutputCategories.Contains(i.Category) || IsCoffeeBean(i)))
+            if (!Entity.Items.Any(i => validOutputCategories.Contains(i.Category) || IsCoffeeBean(i)))
             {
                 return MachineState.Processing;
             }
@@ -47,11 +47,11 @@ namespace GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate
         /// <summary>Get the output item.</summary>
         public ITrackedStack GetOutput()
         {
-            Item validSelectedItem = Entity.items.First(i => validOutputCategories.Contains(i.Category) || IsCoffeeBean(i));
+            Item validSelectedItem = Entity.Items.First(i => validOutputCategories.Contains(i.Category) || IsCoffeeBean(i));
             return new TrackedItem(validSelectedItem, onEmpty: item =>
             {
                 Entity.clearNulls();
-                Entity.items.Remove(validSelectedItem);
+                Entity.Items.Remove(validSelectedItem);
             });
         }
 

@@ -51,7 +51,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                 }
 
                 // Show a "filled" sprite or not, based on if the Harvest Statues has items
-                spriteBatch.Draw(chest.items.Any() ? ModResources.filledStatue : ModResources.emptyStatue, Game1.GlobalToLocal(Game1.viewport, new Vector2(draw_x * 64f + (float)((chest.shakeTimer > 0) ? Game1.random.Next(-1, 2) : 0), (draw_y - 1f) * 64f)), new Rectangle(0, 0, 16, 32), chest.tint.Value * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, base_sort_order);
+                spriteBatch.Draw(chest.Items.Any() ? ModResources.filledStatue : ModResources.emptyStatue, Game1.GlobalToLocal(Game1.viewport, new Vector2(draw_x * 64f + (float)((chest.shakeTimer > 0) ? Game1.random.Next(-1, 2) : 0), (draw_y - 1f) * 64f)), new Rectangle(0, 0, 16, 32), chest.tint.Value * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, base_sort_order);
 
                 return false;
             }

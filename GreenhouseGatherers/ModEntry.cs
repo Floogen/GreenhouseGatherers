@@ -190,9 +190,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             {
                 DoMorningHarvest(location);
 
-                if (location is BuildableGameLocation)
+                if (location.buildings is not null)
                 {
-                    foreach (Building building in (location as BuildableGameLocation).buildings)
+                    foreach (Building building in location.buildings)
                     {
                         GameLocation indoorLocation = building.indoors.Value;
                         if (indoorLocation is null)
@@ -227,9 +227,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             {
                 ConvertFlaggedChestsToHarvestStatues(location);
 
-                if (location is BuildableGameLocation)
+                if (location.buildings is not null)
                 {
-                    foreach (Building building in (location as BuildableGameLocation).buildings)
+                    foreach (Building building in location.buildings)
                     {
                         GameLocation indoorLocation = building.indoors.Value;
                         if (indoorLocation is null)
@@ -253,7 +253,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 }
 
                 // Add the items from the temp Chest to the HarvestStatue
-                var items = chest.items;
+                var items = chest.Items;
                 var modData = chest.modData.Pairs;
                 var tileLocation = chest.TileLocation;
                 location.removeObject(chest.TileLocation, false);

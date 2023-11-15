@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GreenhouseGatherers.Framework.Extensions;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Netcode;
 using StardewModdingAPI;
@@ -99,7 +100,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
             string locationName = ModResources.SplitCamelCaseText(location.Name);
             // Check if we're at capacity and that Junimos aren't allowed to eat excess crops
-            if (chest.items.Count >= chest.GetActualCapacity() && !doJunimosEatExcessCrops)
+            if (chest.Items.Count >= chest.GetActualCapacity() && !doJunimosEatExcessCrops)
             {
                 Game1.showRedMessage($"The Junimos at the {locationName} couldn't harvest due to lack of storage!");
                 return;
@@ -145,7 +146,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
         private bool HasRoomForHarvest()
         {
-            if (chest.items.Count >= chest.GetActualCapacity() && !doJunimosEatExcessCrops)
+            if (chest.Items.Count >= chest.GetActualCapacity() && !doJunimosEatExcessCrops)
             {
                 return false;
             }
@@ -153,10 +154,10 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
             return true;
         }
 
-        private void AttemptSowSeed(int seedIndex, HoeDirt hoeDirt, Vector2 tile)
+        private void AttemptSowSeed(string seedIndex, HoeDirt hoeDirt, Vector2 tile)
         {
             // -74 == Object.SeedsCategory
-            Item seedItem = chest.items.FirstOrDefault(i => i != null && i.Category == -74 && i.ParentSheetIndex == seedIndex);
+            Item seedItem = chest.Items.FirstOrDefault(i => i != null && i.Category == -74 && i.ItemId == seedIndex);
             if (seedItem != null)
             {
                 // Remove one seed from the stack, or the whole item if it is the last seed of the stack
@@ -164,12 +165,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
                 if (seedItem.Stack == 0)
                 {
-                    chest.items.Remove(seedItem);
+                    chest.Items.Remove(seedItem);
                 }
 
                 // Plant the seed on the ground
                 //hoeDirt.crop = new Crop(seedIndex, (int)tile.X, (int)tile.Y);
-                hoeDirt.plant(seedIndex, (int)tile.X, (int)tile.Y, Game1.MasterPlayer, false, hoeDirt.currentLocation);
+                hoeDirt.plant(seedIndex, Game1.MasterPlayer, false);
             }
         }
 
@@ -196,7 +197,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 }
                 //monitor.Log($"Harvesting crop ({tile.X}, {tile.Y}): {crop.forageCrop} | {crop.regrowAfterHarvest} | {crop.dayOfCurrentPhase}, {crop.currentPhase}", LogLevel.Debug);
 
-                if (!doJunimosHarvestFromFlowers && new Object(tile, crop.indexOfHarvest, 0).Category == -80)
+                if (!doJunimosHarvestFromFlowers && new Object(tile, crop.indexOfHarvest.Value).Category == -80)
                 {
                     // Crop is flower and config has been set to skip them
                     continue;
@@ -208,9 +209,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 harvestedTiles.Add(tile);
 
                 // Clear any non-renewing crop
-                if (crop.regrowAfterHarvest == -1)
+                if (crop.RegrowsAfterHarvest() is false)
                 {
-                    int seedIndex = crop.netSeedIndex;
+                    var seedIndex = crop.netSeedIndex.Value;
                     hoeDirt.crop = null;
 
                     // Attempt to replant, if it is enabled and has valid seed
@@ -223,7 +224,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 
             // Search for forage products
             List<Vector2> tilesToRemove = new List<Vector2>();
-            foreach (KeyValuePair<Vector2, Object> tileToForage in location.objects.Pairs.Where(p => p.Value.isForage(location)))
+            foreach (KeyValuePair<Vector2, Object> tileToForage in location.objects.Pairs.Where(p => p.Value.isForage()))
             {
                 if (!HasRoomForHarvest())
                 {
@@ -262,14 +263,14 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 HoeDirt hoeDirt = pot.hoeDirt.Value;
 
                 // HoeDirt seems to be missing its currentLocation when coming from IndoorPots, which is problematic for Crop.harvest()
-                if (hoeDirt.currentLocation is null)
+                if (hoeDirt.Location is null)
                 {
-                    hoeDirt.currentLocation = location;
+                    hoeDirt.Location = location;
                 }
 
                 if (hoeDirt.readyForHarvest())
                 {
-                    if (!doJunimosHarvestFromFlowers && new Object(tile, hoeDirt.crop.indexOfHarvest, 0).Category == -80)
+                    if (!doJunimosHarvestFromFlowers && new Object(tile, hoeDirt.crop.indexOfHarvest.Value).Category == -80)
                     {
                         // Crop is flower and config has been set to skip them
                         continue;
@@ -279,9 +280,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                     harvestedToday = true;
 
                     // Clear any non-renewing crop
-                    if (hoeDirt.crop.regrowAfterHarvest == -1)
+                    if (hoeDirt.crop.RegrowsAfterHarvest() is false)
                     {
-                        int seedIndex = hoeDirt.crop.netSeedIndex;
+                        var seedIndex = hoeDirt.crop.netSeedIndex.Value;
                         hoeDirt.crop = null;
 
                         // Attempt to replant, if it is enabled and has valid seed
@@ -305,7 +306,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 Vector2 tile = tileToIndoorPot.Key;
                 IndoorPot pot = tileToIndoorPot.Value as IndoorPot;
 
-                if (pot.heldObject.Value != null && pot.heldObject.Value.isForage(location))
+                if (pot.heldObject.Value != null && pot.heldObject.Value.isForage())
                 {
                     if (chest.addItem(pot.heldObject.Value.getOne()) != null)
                     {
@@ -326,7 +327,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 minimumFruitOnTreeBeforeHarvest = 3;
             }
 
-            foreach (KeyValuePair<Vector2, TerrainFeature> tileToFruitTree in location.terrainFeatures.Pairs.Where(p => p.Value is FruitTree && (p.Value as FruitTree).fruitsOnTree >= minimumFruitOnTreeBeforeHarvest).ToList())
+            foreach (KeyValuePair<Vector2, TerrainFeature> tileToFruitTree in location.terrainFeatures.Pairs.Where(p => p.Value is FruitTree && (p.Value as FruitTree).fruit.Count >= minimumFruitOnTreeBeforeHarvest).ToList())
             {
                 if (!HasRoomForHarvest())
                 {
@@ -337,45 +338,18 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 Vector2 tile = tileToFruitTree.Key;
                 FruitTree fruitTree = (tileToFruitTree.Value as FruitTree);
 
-                // Determine fruit quality per the game's original code
-                int fruitQuality = 0;
-                if (fruitTree.daysUntilMature <= -112)
+                for (int i = 0; i < fruitTree.fruit.Count; i++)
                 {
-                    fruitQuality = 1;
-                }
-                if (fruitTree.daysUntilMature <= -224)
-                {
-                    fruitQuality = 2;
-                }
-                if (fruitTree.daysUntilMature <= -336)
-                {
-                    fruitQuality = 4;
-                }
+                    var fruit = fruitTree.fruit[i];
+                    fruit.Quality = fruitTree.GetQuality();
 
-                for (int j = 0; j < fruitTree.fruitsOnTree; j++)
-                {
-                    Vector2 offset = new Vector2(0f, 0f);
-                    switch (j)
-                    {
-                        case 0:
-                            offset.X = -64f;
-                            break;
-                        case 1:
-                            offset.X = 64f;
-                            offset.Y = -32f;
-                            break;
-                        case 2:
-                            offset.Y = 32f;
-                            break;
-                    }
-
-                    if (chest.addItem(new Object(fruitTree.indexOfFruit, 1, quality: fruitQuality)) != null)
+                    if (chest.addItem(fruit) is not null)
                     {
                         chest.modData[ModEntry.ateCropsFlag] = true.ToString();
+
+                        fruitTree.fruit[i] = null;
                     }
                 }
-
-                fruitTree.fruitsOnTree.Value = 0;
 
                 harvestedToday = true;
             }
