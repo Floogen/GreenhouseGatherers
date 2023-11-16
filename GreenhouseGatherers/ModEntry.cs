@@ -58,13 +58,14 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             helper.Events.Content.AssetRequested += OnAssetRequested;
 
             // Hook into the game launch
-            helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+            helper.Events.GameLoop.GameLaunched += OnGameLaunched;
 
             // Hook into Player.Warped event so we can spawn some Junimos if the area was recently harvested
-            helper.Events.Player.Warped += this.OnWarped;
+            helper.Events.Player.Warped += OnWarped;
 
             // Hook into save related events
-            helper.Events.GameLoop.DayStarted += this.OnDayStarted;
+            helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
+            helper.Events.GameLoop.DayStarted += OnDayStarted;
         }
 
         private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
@@ -157,6 +158,14 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                     // Add the Harvest Statue purely via Json Assets
                     ApiManager.GetDynamicGameAssetsInterface().AddEmbeddedPack(contentPack.Manifest, Path.Combine(Helper.DirectoryPath, harvestStatuePath));
                 }
+            }
+        }
+
+        private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+        {
+            if (Game1.MasterPlayer.modData.TryGetValue(ModDataKeys.LAST_INSTALLED_MOD_VERSION, out string version) is false || version != this.ModManifest.Version.ToString())
+            {
+                Game1.MasterPlayer.modData[ModDataKeys.LAST_INSTALLED_MOD_VERSION] = this.ModManifest.Version.ToString();
             }
         }
 
