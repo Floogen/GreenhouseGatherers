@@ -1,18 +1,14 @@
 ﻿using GreenhouseGatherers.Framework.Extensions;
 using GreenhouseGatherers.Utilities;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Netcode;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Characters;
-using StardewValley.Menus;
 using StardewValley.Objects;
 using StardewValley.TerrainFeatures;
-using StardewValley.Tools;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
 
 namespace GreenhouseGatherers.GreenhouseGatherers.Objects
 {

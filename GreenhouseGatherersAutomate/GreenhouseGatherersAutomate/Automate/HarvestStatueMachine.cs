@@ -1,6 +1,4 @@
-﻿using GreenhouseGatherers.GreenhouseGatherers.Objects;
-using Microsoft.Xna.Framework;
-using Pathoschild.Stardew.Automate;
+﻿using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Objects;
 using System.Linq;
