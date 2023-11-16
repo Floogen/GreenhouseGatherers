@@ -1,5 +1,4 @@
-﻿
-using GreenhouseGatherers.Utilities;
+﻿using GreenhouseGatherers.Framework.Utilities;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +9,7 @@ using System;
 using System.Linq;
 using Object = StardewValley.Object;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
+namespace GreenhouseGatherers.Framework.Patches.Objects
 {
     internal class ChestPatch : PatchTemplate
     {
@@ -38,15 +37,15 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                     draw_x = Utility.Lerp(chest.localKickStartTile.Value.X, draw_x, chest.kickProgress);
                     draw_y = Utility.Lerp(chest.localKickStartTile.Value.Y, draw_y, chest.kickProgress);
                 }
-                float base_sort_order = System.Math.Max(0f, ((draw_y + 1f) * 64f - 24f) / 10000f) + draw_x * 1E-05f;
+                float base_sort_order = Math.Max(0f, ((draw_y + 1f) * 64f - 24f) / 10000f) + draw_x * 1E-05f;
                 if (chest.localKickStartTile.HasValue)
                 {
                     spriteBatch.Draw(Game1.shadowTexture, Game1.GlobalToLocal(Game1.viewport, new Vector2((draw_x + 0.5f) * 64f, (draw_y + 0.5f) * 64f)), Game1.shadowTexture.Bounds, Color.Black * 0.5f, 0f, new Vector2(Game1.shadowTexture.Bounds.Center.X, Game1.shadowTexture.Bounds.Center.Y), 4f, SpriteEffects.None, 0.0001f);
-                    draw_y -= (float)System.Math.Sin((double)chest.kickProgress * System.Math.PI) * 0.5f;
+                    draw_y -= (float)Math.Sin(chest.kickProgress * Math.PI) * 0.5f;
                 }
 
                 // Show a "filled" sprite or not, based on if the Harvest Statues has items
-                spriteBatch.Draw(chest.Items.Any() ? ModResources.filledStatue : ModResources.emptyStatue, Game1.GlobalToLocal(Game1.viewport, new Vector2(draw_x * 64f + (float)((chest.shakeTimer > 0) ? Game1.random.Next(-1, 2) : 0), (draw_y - 1f) * 64f)), new Rectangle(0, 0, 16, 32), chest.tint.Value * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, base_sort_order);
+                spriteBatch.Draw(chest.Items.Any() ? ModResources.filledStatue : ModResources.emptyStatue, Game1.GlobalToLocal(Game1.viewport, new Vector2(draw_x * 64f + (chest.shakeTimer > 0 ? Game1.random.Next(-1, 2) : 0), (draw_y - 1f) * 64f)), new Rectangle(0, 0, 16, 32), chest.tint.Value * alpha, 0f, Vector2.Zero, 4f, SpriteEffects.None, base_sort_order);
 
                 return false;
             }

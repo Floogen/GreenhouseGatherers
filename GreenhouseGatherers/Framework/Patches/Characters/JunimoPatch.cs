@@ -1,4 +1,4 @@
-﻿using GreenhouseGatherers.Utilities;
+﻿using GreenhouseGatherers.Framework.Utilities;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Netcode;
@@ -8,7 +8,7 @@ using StardewValley.Characters;
 using System;
 using System.Linq;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
+namespace GreenhouseGatherers.Framework.Patches.Characters
 {
     internal class JunimoPatch : PatchTemplate
     {

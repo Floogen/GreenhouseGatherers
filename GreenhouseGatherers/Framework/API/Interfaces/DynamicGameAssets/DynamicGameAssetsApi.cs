@@ -1,6 +1,6 @@
 ﻿using StardewModdingAPI;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.API.Interfaces.DynamicGameAssets
+namespace GreenhouseGatherers.Framework.API.Interfaces.DynamicGameAssets
 {
     public interface DynamicGameAssetsApi
     {

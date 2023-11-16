@@ -1,4 +1,5 @@
 ﻿using GreenhouseGatherersAutomate.GreenhouseGatherersAutomate.Automate;
+using Pathoschild.Stardew.Automate;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using System;

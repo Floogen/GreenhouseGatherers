@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.Models
+namespace GreenhouseGatherers.Framework.Models
 {
     public class SaveData
     {

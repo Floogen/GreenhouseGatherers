@@ -1,4 +1,4 @@
-﻿namespace GreenhouseGatherers.Utilities
+﻿namespace GreenhouseGatherers.Framework.Utilities
 {
     public class ModDataKeys
     {

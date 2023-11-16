@@ -1,6 +1,6 @@
 ﻿using StardewModdingAPI;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.Patches
+namespace GreenhouseGatherers.Framework.Patches
 {
     internal class PatchTemplate
     {

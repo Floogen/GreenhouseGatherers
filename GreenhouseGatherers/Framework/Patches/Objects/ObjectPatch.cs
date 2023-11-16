@@ -1,4 +1,4 @@
-﻿using GreenhouseGatherers.Utilities;
+﻿using GreenhouseGatherers.Framework.Utilities;
 using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using Object = StardewValley.Object;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
+namespace GreenhouseGatherers.Framework.Patches.Objects
 {
     internal class ObjectPatch : PatchTemplate
     {

@@ -1,5 +1,5 @@
 ﻿using GreenhouseGatherers.Framework.Extensions;
-using GreenhouseGatherers.Utilities;
+using GreenhouseGatherers.Framework.Utilities;
 using Microsoft.Xna.Framework;
 using Netcode;
 using StardewModdingAPI;
@@ -10,7 +10,7 @@ using StardewValley.TerrainFeatures;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.Objects
+namespace GreenhouseGatherers.Framework.Objects
 {
     public class HarvestStatue
     {
@@ -183,7 +183,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 }
 
                 Vector2 tile = tileToHoeDirt.Key;
-                HoeDirt hoeDirt = (tileToHoeDirt.Value as HoeDirt);
+                HoeDirt hoeDirt = tileToHoeDirt.Value as HoeDirt;
 
                 Crop crop = hoeDirt.crop;
                 if (!hoeDirt.readyForHarvest())
@@ -333,7 +333,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Objects
                 }
 
                 Vector2 tile = tileToFruitTree.Key;
-                FruitTree fruitTree = (tileToFruitTree.Value as FruitTree);
+                FruitTree fruitTree = tileToFruitTree.Value as FruitTree;
 
                 for (int i = 0; i < fruitTree.fruit.Count; i++)
                 {

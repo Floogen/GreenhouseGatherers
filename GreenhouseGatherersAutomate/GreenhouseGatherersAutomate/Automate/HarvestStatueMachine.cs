@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Pathoschild.Stardew.Automate;
 using StardewValley;
 using StardewValley.Objects;
 using System.Linq;

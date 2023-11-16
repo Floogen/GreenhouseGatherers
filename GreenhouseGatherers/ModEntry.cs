@@ -1,8 +1,9 @@
-﻿using GreenhouseGatherers.GreenhouseGatherers.API;
-using GreenhouseGatherers.GreenhouseGatherers.Models;
-using GreenhouseGatherers.GreenhouseGatherers.Objects;
-using GreenhouseGatherers.GreenhouseGatherers.Patches.Objects;
-using GreenhouseGatherers.Utilities;
+﻿using GreenhouseGatherers.Framework.API;
+using GreenhouseGatherers.Framework.Models;
+using GreenhouseGatherers.Framework.Objects;
+using GreenhouseGatherers.Framework.Patches.Characters;
+using GreenhouseGatherers.Framework.Patches.Objects;
+using GreenhouseGatherers.Framework.Utilities;
 using HarmonyLib;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;

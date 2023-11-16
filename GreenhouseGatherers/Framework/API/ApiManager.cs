@@ -1,8 +1,8 @@
-﻿using GreenhouseGatherers.GreenhouseGatherers.API.Interfaces.DynamicGameAssets;
-using GreenhouseGatherers.Utilities;
+﻿using GreenhouseGatherers.Framework.API.Interfaces.DynamicGameAssets;
+using GreenhouseGatherers.Framework.Utilities;
 using StardewModdingAPI;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.API
+namespace GreenhouseGatherers.Framework.API
 {
     public static class ApiManager
     {

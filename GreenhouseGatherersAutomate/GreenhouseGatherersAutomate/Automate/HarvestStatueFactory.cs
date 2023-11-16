@@ -1,5 +1,6 @@
-﻿using GreenhouseGatherers.GreenhouseGatherers.API;
+﻿using GreenhouseGatherers.Framework.API;
 using Microsoft.Xna.Framework;
+using Pathoschild.Stardew.Automate;
 using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Locations;

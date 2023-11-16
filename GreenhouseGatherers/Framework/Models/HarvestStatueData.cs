@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.Models
+namespace GreenhouseGatherers.Framework.Models
 {
     public class HarvestStatueData
     {
@@ -9,8 +9,8 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Models
 
         public HarvestStatueData(string gameLocation, Vector2 tile)
         {
-            this.GameLocation = gameLocation;
-            this.Tile = tile;
+            GameLocation = gameLocation;
+            Tile = tile;
         }
     }
 }

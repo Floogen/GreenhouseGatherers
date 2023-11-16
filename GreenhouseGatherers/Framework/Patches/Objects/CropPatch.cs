@@ -1,4 +1,4 @@
-﻿using GreenhouseGatherers.Utilities;
+﻿using GreenhouseGatherers.Framework.Utilities;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -11,7 +11,7 @@ using System;
 using System.Linq;
 using Object = StardewValley.Object;
 
-namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
+namespace GreenhouseGatherers.Framework.Patches.Objects
 {
     internal class CropPatch : PatchTemplate
     {
@@ -78,18 +78,18 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                 }
                 else if (__instance.whichForageCrop.Value == "2")
                 {
-                    soil.shake((float)Math.PI / 48f, (float)Math.PI / 40f, (float)(xTile * 64) < Game1.player.Position.X);
+                    soil.shake((float)Math.PI / 48f, (float)Math.PI / 40f, xTile * 64 < Game1.player.Position.X);
                     return false;
                 }
                 if (Game1.player.professions.Contains(16))
                 {
                     o.Quality = 4;
                 }
-                else if (r2.NextDouble() < (double)((float)Game1.player.ForagingLevel / 30f))
+                else if (r2.NextDouble() < (double)(Game1.player.ForagingLevel / 30f))
                 {
                     o.Quality = 2;
                 }
-                else if (r2.NextDouble() < (double)((float)Game1.player.ForagingLevel / 15f))
+                else if (r2.NextDouble() < (double)(Game1.player.ForagingLevel / 15f))
                 {
                     o.Quality = 1;
                 }
@@ -114,7 +114,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
 
                 Random r = new Random(xTile * 7 + yTile * 11 + (int)Game1.stats.DaysPlayed + (int)Game1.uniqueIDForThisGame);
                 CropData data = __instance.GetData();
-                double chanceForGoldQuality = 0.2 * ((double)Game1.player.FarmingLevel / 10.0) + 0.2 * (double)fertilizerQualityLevel * (((double)Game1.player.FarmingLevel + 2.0) / 12.0) + 0.01;
+                double chanceForGoldQuality = 0.2 * (Game1.player.FarmingLevel / 10.0) + 0.2 * fertilizerQualityLevel * ((Game1.player.FarmingLevel + 2.0) / 12.0) + 0.01;
                 double chanceForSilverQuality = Math.Min(0.75, chanceForGoldQuality * 2.0);
 
                 int cropQuality = 0;
@@ -139,7 +139,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                     int maxStack = Math.Max(minStack, data.HarvestMaxStack);
                     if (data.HarvestMaxIncreasePerFarmingLevel > 0f)
                     {
-                        maxStack += (int)((float)Game1.player.FarmingLevel * data.HarvestMaxIncreasePerFarmingLevel);
+                        maxStack += (int)(Game1.player.FarmingLevel * data.HarvestMaxIncreasePerFarmingLevel);
                     }
                     if (minStack > 1 || maxStack > 1)
                     {
@@ -155,10 +155,10 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                     }
                 }
 
-                Item harvestedItem = (__instance.programColored.Value ? new ColoredObject(__instance.indexOfHarvest, 1, __instance.tintColor.Value)
+                Item harvestedItem = __instance.programColored.Value ? new ColoredObject(__instance.indexOfHarvest, 1, __instance.tintColor.Value)
                 {
                     Quality = cropQuality
-                } : ItemRegistry.Create(__instance.indexOfHarvest.Value, 1, cropQuality));
+                } : ItemRegistry.Create(__instance.indexOfHarvest.Value, 1, cropQuality);
 
                 if (harvestedItem is not null)
                 {
@@ -177,14 +177,14 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                         __instance.indexOfHarvest.Value = "431";
                         numToHarvest = r.Next(1, 4);
                     }
-                    harvestedItem = (__instance.programColored.Value ? new ColoredObject(__instance.indexOfHarvest.Value, 1, __instance.tintColor.Value) : ItemRegistry.Create(__instance.indexOfHarvest.Value));
+                    harvestedItem = __instance.programColored.Value ? new ColoredObject(__instance.indexOfHarvest.Value, 1, __instance.tintColor.Value) : ItemRegistry.Create(__instance.indexOfHarvest.Value);
                     int price = 0;
                     Object obj = harvestedItem as Object;
                     if (obj != null)
                     {
                         price = obj.Price;
                     }
-                    float experience = (float)(16.0 * Math.Log(0.018 * (double)price + 1.0, Math.E));
+                    float experience = (float)(16.0 * Math.Log(0.018 * price + 1.0, Math.E));
                     if (junimoHarvester == null)
                     {
                         Game1.player.gainExperience(0, (int)Math.Round(experience));
@@ -198,7 +198,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers.Patches.Objects
                         }
                     }
 
-                    int regrowDays = data?.RegrowDays ?? (-1);
+                    int regrowDays = data?.RegrowDays ?? -1;
                     if (regrowDays <= 0)
                     {
                         return true;
