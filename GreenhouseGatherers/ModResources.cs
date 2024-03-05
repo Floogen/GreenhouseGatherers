@@ -23,8 +23,8 @@ namespace GreenhouseGatherers
 
         public static void LoadAssets(IModHelper helper, string primaryPath)
         {
-            emptyStatue = helper.ModContent.Load<Texture2D>(Path.Combine(primaryPath, "Sprites", "empty.png"));
-            filledStatue = helper.ModContent.Load<Texture2D>(Path.Combine(primaryPath, "Sprites", "filled.png"));
+            emptyStatue = helper.ModContent.Load<Texture2D>(Path.Combine(primaryPath, "empty.png"));
+            filledStatue = helper.ModContent.Load<Texture2D>(Path.Combine(primaryPath, "filled.png"));
         }
 
         public static string SplitCamelCaseText(string input)
