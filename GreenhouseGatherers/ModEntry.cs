@@ -10,6 +10,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Characters;
+using StardewValley.Locations;
 using StardewValley.Objects;
 using System;
 using System.IO;
@@ -27,7 +28,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
         private ModConfig config;
 
         // Asset related
-        internal static readonly string harvestStatuePath = Path.Combine("assets", "HarvestStatue");
+        internal static readonly string harvestStatuePath = Path.Combine("Framework", "Assets");
 
         public override void Entry(IModHelper helper)
         {
@@ -146,9 +147,10 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 Game1.MasterPlayer.craftingRecipes.Add("HarvestStatueRecipe", 0);
             }
 
-            if (!Game1.MasterPlayer.modData.ContainsKey(ModDataKeys.HAS_CONVERTED_OLD_STATUES))
+            if (!Game1.MasterPlayer.modData.ContainsKey(ModDataKeys.HAS_HANDLED_SDV14_MIGRATION))
             {
                 ConvertOldHarvestStatues();
+                Game1.MasterPlayer.modData[ModDataKeys.HAS_HANDLED_SDV14_MIGRATION] = true.ToString();
             }
 
             // Do morning harvest
@@ -174,10 +176,12 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void DoMorningHarvest(GameLocation location)
         {
-            foreach (Chest chest in location.Objects.Values.Where(o => o.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID)))
+            foreach (Chest chest in location.Objects.Values.Where(o => o.ItemId.Equals(ModDataKeys.HARVEST_STATUE_ITEM_ID)))
             {
                 // Reset daily modData flags
+                chest.modData[ModDataKeys.HARVEST_STATUE_ID] = true.ToString();
                 chest.modData[ModDataKeys.HAS_SPAWNED_JUNIMOS] = false.ToString();
+                chest.modData[ModDataKeys.HAS_EATEN_CROPS] = false.ToString();
 
                 // Gather any crops nearby
                 var harvestStatue = new HarvestStatue(chest, location);
@@ -187,8 +191,7 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void ConvertOldHarvestStatues()
         {
-            // Find all chests with the "is-harvest-statue" == "true"
-            Monitor.Log("Loading...", LogLevel.Trace);
+            // Find all chests that have the ModData HARVEST_STATUE_ID but are not the custom object HARVEST_STATUE_ITEM_ID
             foreach (GameLocation location in Game1.locations)
             {
                 ConvertFlaggedChestsToHarvestStatues(location);
@@ -211,9 +214,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
 
         private void ConvertFlaggedChestsToHarvestStatues(GameLocation location)
         {
-            foreach (Chest chest in location.Objects.Pairs.Where(p => p.Value is Chest).Select(p => p.Value).ToList())
+            foreach (Chest chest in location.Objects.Pairs.Where(p => p.Value is Chest chest && chest.ItemId.Equals(ModDataKeys.HARVEST_STATUE_ITEM_ID) is false).Select(p => p.Value).ToList())
             {
-                if (!chest.modData.ContainsKey(ModDataKeys.OLD_HARVEST_STATUE_ID))
+                if (!chest.modData.ContainsKey(ModDataKeys.HARVEST_STATUE_ID))
                 {
                     continue;
                 }
@@ -224,9 +227,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 var tileLocation = chest.TileLocation;
                 location.removeObject(chest.TileLocation, false);
 
-                var statueItem = ApiManager.GetDynamicGameAssetsInterface().SpawnDGAItem("PeacefulEnd.GreenhouseGatherers.HarvestStatue/HarvestStatue") as Item;
-                var wasReplaced = (statueItem as StardewValley.Object).placementAction(location, (int)tileLocation.X * 64, (int)tileLocation.Y * 64, Game1.player);
-                Monitor.Log($"Attempting to replace old Harvest Statue at {tileLocation} | Was Replaced: {wasReplaced}", LogLevel.Debug);
+                var statueItem = new StardewValley.Object(tileLocation, ModDataKeys.HARVEST_STATUE_ITEM_ID);
+                var wasReplaced = statueItem.placementAction(location, (int)tileLocation.X * 64, (int)tileLocation.Y * 64, Game1.player);
+                Monitor.Log($"Attempting to replace old Harvest Statue at {tileLocation} -> Was Replaced: {wasReplaced}", LogLevel.Debug);
 
                 // Move the modData over in case the Chests Anywhere mod is used (so we can retain name / category data)
                 if (wasReplaced && location.objects.ContainsKey(tileLocation) && location.objects[tileLocation] is Chest statueObj)
