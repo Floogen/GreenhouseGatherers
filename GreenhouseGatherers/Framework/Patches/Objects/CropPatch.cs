@@ -189,7 +189,7 @@ namespace GreenhouseGatherers.Framework.Patches.Objects
                     {
                         Game1.player.gainExperience(0, (int)Math.Round(experience));
                     }
-                    for (int i = 0; i < numToHarvest - 1; i++)
+                    for (int i = 0; i < numToHarvest; i++)
                     {
                         if (statueObj.addItem(harvestedItem.getOne()) != null)
                         {
@@ -199,16 +199,15 @@ namespace GreenhouseGatherers.Framework.Patches.Objects
                     }
 
                     int regrowDays = data?.RegrowDays ?? -1;
-                    if (regrowDays <= 0)
+                    if (regrowDays > 0)
                     {
-                        return true;
+                        __instance.fullyGrown.Value = true;
+                        if (__instance.dayOfCurrentPhase.Value == regrowDays)
+                        {
+                            __instance.updateDrawMath(___tilePosition);
+                        }
+                        __instance.dayOfCurrentPhase.Value = regrowDays;
                     }
-                    __instance.fullyGrown.Value = true;
-                    if (__instance.dayOfCurrentPhase.Value == regrowDays)
-                    {
-                        __instance.updateDrawMath(___tilePosition);
-                    }
-                    __instance.dayOfCurrentPhase.Value = regrowDays;
                 }
             }
 
