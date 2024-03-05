@@ -1,5 +1,5 @@
 ﻿{
-  "Format": "1.28.0",
+  "Format": "2.0",
   "Changes": [
     // Load Texture
     {
@@ -11,33 +11,24 @@
     // Load Storage Data
     {
       "Action": "EditData",
-      "Target": "furyx639.ExpandedStorage/Storages",
+      "Target": "Data/BigCraftables",
       "Entries": {
-        "HarvestStatue": {
+        "PeacefulEnd.GreenhouseGatheres_HarvestStatue": {
+          "Name": "Harvest Statue",
           "DisplayName": "{{i18n: big-craftable.HarvestStatue.name}}",
           "Description": "{{i18n: big-craftable.HarvestStatue.description}}",
           "Frames": 1,
-          "Image": "PeacefulEnd.GreenhouseGatherers.HarvestStatue/HarvestStatue",
-          "PlayerColor": false,
-          "PlayerConfig": false,
-          "Capacity": 36,
-          "VacuumItems": false,
-          "IsPlaceable": true,
-          "AccessCarried": false,
-          "CanCarry": false,
-          "OpenSound": "stoneStep",
-          "PlaceSound": "hammer",
-          "ModData": {
+          "Texture": "PeacefulEnd.GreenhouseGatherers.HarvestStatue/HarvestStatue",
+          "CustomFields": {
             "Pathoschild.Automate/StoreItems": "Disable",
-            "PeacefulEnd.GreenhouseGatherers/HarvestStatue": "true",
-            "PeacefulEnd.GreenhouseGatherers/AteCrops": "false",
-            "PeacefulEnd.GreenhouseGatherers/HasSpawnedJunimos": "false"
-          },
-          "DisabledFeatures": [
-            "AccessCarried",
-            "VacuumItems",
-            "CanCarry"
-          ]
+
+            // Expanded Storage Data
+            "furyx639.ExpandedStorage/Enabled": "true",
+            "furyx639.ExpandedStorage/Capacity": "36",
+            "furyx639.ExpandedStorage/PlayerColor": "false",
+            "furyx639.ExpandedStorage/OpenSound": "stoneStep",
+            "furyx639.ExpandedStorage/PlaceSound": "hammer"
+          }
         }
       }
     }
