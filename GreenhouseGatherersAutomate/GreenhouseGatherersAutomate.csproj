@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<AssemblyName>GreenhouseGatherersAutomate</AssemblyName>
 		<RootNamespace>GreenhouseGatherersAutomate</RootNamespace>
-		<Version>1.0.0</Version>
+		<Version>2.0.0-alpha.1</Version>
 		<TargetFramework>net6.0</TargetFramework>
 		<EnableHarmony>true</EnableHarmony>
 		<EnableModZip>false</EnableModZip>
@@ -22,7 +22,7 @@
 
 	<ItemGroup>
 	  <Reference Include="Automate">
-	    <HintPath>E:\SteamLibrary\steamapps\common\Stardew Valley\Mods\Automate\Automate.dll</HintPath>
+	    <HintPath>E:\SteamLibrary\steamapps\common\Stardew Valley\Mods\Core Mods\Automate\Automate.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 
