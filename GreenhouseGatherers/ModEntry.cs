@@ -54,9 +54,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             // Hook into Content related events
             helper.Events.Content.AssetRequested += OnAssetRequested;
 
-            // Hook into the game launch
-            helper.Events.GameLoop.GameLaunched += OnGameLaunched;
-
             // Hook into Player.Warped event so we can spawn some Junimos if the area was recently harvested
             helper.Events.Player.Warped += OnWarped;
 
@@ -127,35 +124,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             new ChestPatch(Monitor, Helper).Apply(harmony);
             new CropPatch(Monitor, Helper).Apply(harmony);
             new JunimoPatch(Monitor, Helper).Apply(harmony);
-        }
-
-        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
-        {
-            // Check if spacechase0's DynamicGameAssets is in the current mod list
-            if (Helper.ModRegistry.IsLoaded("spacechase0.DynamicGameAssets"))
-            {
-                Monitor.Log("Attempting to hook into spacechase0.DynamicGameAssets.", LogLevel.Debug);
-                ApiManager.HookIntoDynamicGameAssets(Helper);
-
-                var contentPack = Helper.ContentPacks.CreateTemporary(
-                    Path.Combine(Helper.DirectoryPath, harvestStatuePath),
-                    "PeacefulEnd.GreenhouseGatherers.HarvestStatue",
-                    "PeacefulEnd.GreenhouseGatherers.HarvestStatue",
-                    "Adds craftable Junimo Harvest Statues.",
-                    "PeacefulEnd",
-                    new SemanticVersion("1.0.0"));
-
-                // Check if furyx639's Expanded Storage is in the current mod list
-                if (Helper.ModRegistry.IsLoaded("furyx639.ExpandedStorage"))
-                {
-                    Monitor.Log("Attempting to hook into furyx639.ExpandedStorage.", LogLevel.Debug);
-                }
-                else
-                {
-                    // Add the Harvest Statue purely via Json Assets
-                    ApiManager.GetDynamicGameAssetsInterface().AddEmbeddedPack(contentPack.Manifest, Path.Combine(Helper.DirectoryPath, harvestStatuePath));
-                }
-            }
         }
 
         private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
