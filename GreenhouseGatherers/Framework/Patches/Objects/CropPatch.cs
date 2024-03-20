@@ -24,11 +24,11 @@ namespace GreenhouseGatherers.Framework.Patches.Objects
 
         internal void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Method(_object, nameof(Crop.harvest), new[] { typeof(int), typeof(int), typeof(HoeDirt), typeof(JunimoHarvester) }), prefix: new HarmonyMethod(GetType(), nameof(HarvestPrefix)));
+            harmony.Patch(AccessTools.Method(_object, nameof(Crop.harvest), new[] { typeof(int), typeof(int), typeof(HoeDirt), typeof(JunimoHarvester), typeof(bool) }), prefix: new HarmonyMethod(GetType(), nameof(HarvestPrefix)));
         }
 
         [HarmonyPriority(Priority.Low)]
-        internal static bool HarvestPrefix(Crop __instance, Vector2 ___tilePosition, int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester = null)
+        internal static bool HarvestPrefix(Crop __instance, Vector2 ___tilePosition, int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester = null, bool isForcedScytheHarvest = false)
         {
             Object cropObj = new Object(__instance.indexOfHarvest, 1);
             string cropName = "Unknown";
