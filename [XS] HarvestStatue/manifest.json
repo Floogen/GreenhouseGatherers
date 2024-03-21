@@ -1,7 +1,7 @@
 ﻿{
 	"Name": "[XS] Harvest Statue",
 	"Author": "PeacefulEnd",
-	"Version": "3.0.2",
+	"Version": "3.0.3",
 	"Description": "Harvest Statue via Expanded Storage",
 	"UniqueID": "PeacefulEnd.GreenhouseGatherers.HarvestStatue",
   "UpdateKeys": [ "Nexus:7619" ],
