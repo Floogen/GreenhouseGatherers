@@ -30,21 +30,14 @@ namespace GreenhouseGatherers.Framework.Patches.Objects
         [HarmonyPriority(Priority.Low)]
         internal static bool HarvestPrefix(Crop __instance, Vector2 ___tilePosition, int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester = null, bool isForcedScytheHarvest = false)
         {
-            Object cropObj = new Object(__instance.indexOfHarvest, 1);
-            string cropName = "Unknown";
-            if (cropObj != null)
-            {
-                cropName = cropObj.DisplayName;
-            }
-
             if (soil is null)
             {
-                _monitor.Log($"Crop ({cropName}) at {xTile}, {yTile} is missing HoeDirt, unable to process!", LogLevel.Trace);
+                _monitor.Log($"Crop at {xTile}, {yTile} is missing HoeDirt, unable to process!", LogLevel.Trace);
                 return true;
             }
             if (soil.Location is null)
             {
-                _monitor.Log($"Crop ({cropName}) at {xTile}, {yTile} is missing currentLocation (bad GameLocation?), unable to process!", LogLevel.Trace);
+                _monitor.Log($"Crop at {xTile}, {yTile} is missing currentLocation (bad GameLocation?), unable to process!", LogLevel.Trace);
                 return true;
             }
 
@@ -57,6 +50,18 @@ namespace GreenhouseGatherers.Framework.Patches.Objects
             if (soil.Location.farmers.Any(f => !f.isInBed))
             {
                 return true;
+            }
+
+            if (__instance is null || string.IsNullOrEmpty(__instance.indexOfHarvest.Value))
+            {
+                return true;
+            }
+
+            Object cropObj = new Object(__instance.indexOfHarvest.Value, 1);
+            string cropName = "Unknown";
+            if (cropObj != null)
+            {
+                cropName = cropObj.DisplayName;
             }
 
             // Get the nearby HarvestStatue, which will be placing the harvested crop into
