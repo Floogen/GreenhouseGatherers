@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<AssemblyName>GreenhouseGatherers</AssemblyName>
 		<RootNamespace>GreenhouseGatherers</RootNamespace>
-		<Version>3.0.3</Version>
+		<Version>3.0.4</Version>
 		<TargetFramework>net6.0</TargetFramework>
 		<EnableHarmony>true</EnableHarmony>
 		<EnableModZip>false</EnableModZip>
