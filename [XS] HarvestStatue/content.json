@@ -31,6 +31,14 @@
           }
         }
       }
-    }
+    },
+    // Add Crafting Recipe
+    {
+      "Action": "EditData",
+      "Target": "Data/CraftingRecipes",
+      "Entries": {
+        "HarvestStatueRecipe": "74 1 390 100 268 50/Field/PeacefulEnd.GreenhouseGatheres_HarvestStatue/true/none/{{i18n: big-craftable.HarvestStatue.name}}"
+      }
+    },
   ]
 }
