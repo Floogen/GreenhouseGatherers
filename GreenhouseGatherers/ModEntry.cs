@@ -52,6 +52,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             // Load the config
             this.config = helper.ReadConfig<ModConfig>();
 
+            // Add in our debug commands
+            helper.ConsoleCommands.Add("gg_learn_recipe", "Use to force learn the Harvest Statue recipe. \n\nUsage: gg_learn_recipe", delegate { Game1.player.craftingRecipes.Add("HarvestStatueRecipe", 0); });
+
             // Hook into Content related events
             helper.Events.Content.AssetRequested += OnAssetRequested;
 
@@ -71,14 +74,6 @@ namespace GreenhouseGatherers.GreenhouseGatherers
                 {
                     var data = asset.AsDictionary<string, string>().Data;
                     data["WizardHarvestStatueRecipe"] = "Enclosed you'll find blueprints for a statue imbued with forest magic.^ ^If placed indoors, it allows Junimos to enter buildings and harvest crops.^ ^Use it well...^ ^-M. Rasmodius, Wizard%item craftingRecipe HarvestStatueRecipe %%";
-                });
-            }
-            else if (e.NameWithoutLocale.IsEquivalentTo("Data/CraftingRecipes"))
-            {
-                e.Edit(asset =>
-                {
-                    var data = asset.AsDictionary<string, string>().Data;
-                    data["HarvestStatueRecipe"] = "74 1 390 350 268 150/Home/232/true/null/Harvest Statue";
                 });
             }
         }
@@ -142,9 +137,9 @@ namespace GreenhouseGatherers.GreenhouseGatherers
             {
                 Game1.MasterPlayer.mailbox.Add("WizardHarvestStatueRecipe");
             }
-            if (Game1.MasterPlayer.mailReceived.Contains("WizardHarvestStatueRecipe") && !Game1.MasterPlayer.knowsRecipe("HarvestStatueRecipe"))
+            if (Game1.MasterPlayer.mailReceived.Contains("WizardHarvestStatueRecipe") && !Game1.player.knowsRecipe("HarvestStatueRecipe"))
             {
-                Game1.MasterPlayer.craftingRecipes.Add("HarvestStatueRecipe", 0);
+                Game1.player.craftingRecipes.Add("HarvestStatueRecipe", 0);
             }
 
             if (!Game1.MasterPlayer.modData.ContainsKey(ModDataKeys.HAS_HANDLED_SDV14_MIGRATION))
